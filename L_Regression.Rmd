@@ -1,0 +1,91 @@
+---
+title: "Regression"
+output: html_document
+date: '2022-05-04'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyr)
+library(dplyr)
+library(tidyverse)
+
+library(sjPlot)
+library(cvTools)
+
+library(vcdExtra)
+library(corrplot)
+library(RColorBrewer)
+```
+
+Reading in the reef data:
+```{r}
+reef = read_csv("Reef_check.csv")
+
+new_reef = read_csv("lr_version_merged_mean.csv")
+
+# Check what the reef dataset looks like
+head(new_reef)
+```
+Data cleaning: 
+
+- Working on the copy of the reef dataset called data
+- Cleaned names so it would be easier to work with the variables
+
+```{r}
+## clean variable names
+data = reef %>% janitor::clean_names()
+
+names(data)
+```
+- Removing NA rows, we cannot work with missing values that we cannot access from the dataset
+- Converting format of entries in the variables we can use
+```{r}
+## removing NA data entries
+data <- na.omit(data)
+
+## changing ocean to factor
+data$ocean <- as.factor(data$ocean)
+
+## changing date to date
+data$date <- as.Date(data$date, format = "%d-%b-%y")
+
+## changing temperature to celcius
+data$temp <- data$temperature_kelvin - 273.15
+
+## longitude and latitude maximum and minimum to match dataset
+```
+
+Assumption: For the logistic regression, the predictors are meant to be binary. So we convert the entries of average_bleaching >0 to be 1.
+```{r}
+# We have to sort out bleached and not bleached corals
+data$bleached <- ifelse(data$average_bleaching > 0, "1", "0")
+# 0 = not bleached
+# 1 = bleached
+data %>% count(bleached)
+
+# Convert to numeric
+data$bleached <- as.numeric(data$bleached)
+
+```
+
+Assumption: Observations from the dataset can be related to each other?
+
+Assumption: Correlation 
+
+
+Fitting the Logistic Regression:
+
+```{r}
+glm = glm(bleached ~ ssta_frequency + temperature_kelvin_standard_deviation + rate_of_sst_change + latitude_degrees, family = binomial, data = data)
+summary(glm)
+
+glm
+```
+Predicting accuracy
+```{r}
+#
+```
+
+
+I don't think logistic regression is best choice as the predictor variables used in this case weren't binary.
