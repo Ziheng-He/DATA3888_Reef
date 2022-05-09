@@ -1,0 +1,97 @@
+---
+title: "Merging the eReefs data"
+author: "Jackson Zhou"
+output:
+  html_document:
+    theme: united
+    highlight: kate
+---
+
+<style>
+h1, h2, h3, h4, h5 {text-align: left;}
+body {text-align: justify;}
+.leaflet {margin: auto;}
+</style>
+
+Loading in packages:
+
+```{r Loading in packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(janitor)
+library(sf)
+library(nngeo)
+```
+
+Loading in the required data:
+
+```{r Loading in the data}
+reef <- read_csv("./Data/Reef_Check_with_cortad_variables_with_annual_rate_of_SST_change.csv",
+                 show_col_types = FALSE) %>% 
+  clean_names()
+
+currents <- read_csv("./Data/eReefs-aggregated-monthly-data.csv",
+                     show_col_types = FALSE) %>% 
+  clean_names()
+```
+
+We filter the reef data to only include Australian (in particular, Queensland) data from 2010 - 2017 (the range of the ocean currents data).
+In addition, we add a numeric month column to match that of the currents data, and an index column so that processing the merging results is easier.
+
+```{r Filtering the reef data}
+reef_filtered <- reef %>% 
+  filter(year >= 2010 & year <= 2017) %>% 
+  filter(country == "Australia") %>% 
+  filter(state_province_island == "Queensland") %>% 
+  mutate(month = match(sapply(str_split(date, "-"), "[[", 2), month.abb),
+         index = row_number())
+```
+
+Checking the geographic range covered by both datasets:
+
+```{r Checking the geographic ranges}
+cat("Reef data range:", range(reef_filtered$latitude_degrees), "|", range(reef_filtered$longitude_degrees))
+cat("\nCurrents data range:", range(currents$latitude), "|", range(currents$longitude))
+```
+
+The currents data is seen to cover the reef data, which is good.
+First, we perform a spatial cross-join on the filtered reef data with the currents data.
+After that, we average the rows which are joined across each index.
+
+```{r Spatial cross-join and further merging}
+reef_filtered_sf <- reef_filtered %>% 
+  st_as_sf(coords = c("longitude_degrees", "latitude_degrees"), remove = FALSE)
+
+currents_sf <- currents %>% 
+  st_as_sf(coords = c("longitude", "latitude"), remove = FALSE)
+
+# k nearest neighbours merge
+reef_crossed <- st_join(reef_filtered_sf, currents_sf, join = st_nn, maxdist = 0.5, k = 88) %>% 
+  as.data.frame() %>% 
+  arrange(index, year.y, month.y) %>% 
+  select(-geometry)
+
+reef_summarised <-  reef_crossed %>% 
+  group_by(index) %>% 
+  summarise(eta = mean(eta),
+            salt = mean(salt),
+            temp = mean(temp),
+            wspeed_u = mean(wspeed_u),
+            wspeed_v = mean(wspeed_v),
+            mean_wspeed = mean(mean_wspeed),
+            u = mean(u),
+            v = mean(v),
+            mean_cur = mean(mean_cur))
+
+reef_merged <- left_join(reef_filtered, reef_summarised, by = "index")
+```
+
+Fitting a basic logistic regression model to the data:
+
+```{r Fitting a basic model}
+reef_merged_processed <- reef_merged %>% mutate(bleached = as.factor(ifelse(average_bleaching > 0, 1, 0)))
+
+glm(bleached ~ eta + salt + temp + mean_cur + mean_wspeed, 
+    family = binomial(link = "logit"), 
+    data = reef_merged_processed) %>% 
+  summary()
+```
