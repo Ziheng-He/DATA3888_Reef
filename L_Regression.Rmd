@@ -20,9 +20,9 @@ library(RColorBrewer)
 
 Reading in the reef data:
 ```{r}
-reef = read_csv("Reef_check.csv")
+reef = read_csv("Data/Reef_Check_with_cortad_variables_with_annual_rate_of_SST_change.csv")
 
-new_reef = read_csv("lr_version_merged_mean.csv")
+new_reef = read_csv("Data/lr_version_merged_mean.csv")
 
 # Check what the reef dataset looks like
 head(new_reef)
@@ -34,7 +34,7 @@ Data cleaning:
 
 ```{r}
 ## clean variable names
-data = reef %>% janitor::clean_names()
+data = new_reef %>% janitor::clean_names()
 
 names(data)
 ```
@@ -44,11 +44,8 @@ names(data)
 ## removing NA data entries
 data <- na.omit(data)
 
-## changing ocean to factor
-data$ocean <- as.factor(data$ocean)
-
 ## changing date to date
-data$date <- as.Date(data$date, format = "%d-%b-%y")
+# data$date <- as.Date(data$date, format = "%d-%b-%y")
 
 ## changing temperature to celcius
 data$temp <- data$temperature_kelvin - 273.15
@@ -77,7 +74,7 @@ Assumption: Correlation
 Fitting the Logistic Regression:
 
 ```{r}
-glm = glm(bleached ~ ssta_frequency + temperature_kelvin_standard_deviation + rate_of_sst_change + latitude_degrees, family = binomial, data = data)
+glm = glm(bleached ~ ssta_frequency + temperature_kelvin_standard_deviation + salt + v + mean_cur, family = binomial, data = data)
 summary(glm)
 
 glm
