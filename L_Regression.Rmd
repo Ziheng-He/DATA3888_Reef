@@ -48,7 +48,7 @@ data <- na.omit(data)
 # data$date <- as.Date(data$date, format = "%d-%b-%y")
 
 ## changing temperature to celcius
-data$temp <- data$temperature_kelvin - 273.15
+data$temperature_celcius <- data$temperature_kelvin - 273.15
 
 ## longitude and latitude maximum and minimum to match dataset
 ```
@@ -74,15 +74,28 @@ Assumption: Correlation
 Fitting the Logistic Regression:
 
 ```{r}
-glm = glm(bleached ~ ssta_frequency + temperature_kelvin_standard_deviation + salt + v + mean_cur, family = binomial, data = data)
+glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
 summary(glm)
 
 glm
 ```
 Predicting accuracy
-```{r}
-#
-```
 
+accuracy
+- RMSE by CV
 
-I don't think logistic regression is best choice as the predictor variables used in this case weren't binary.
+stability
+- how different model performs across all models
+- spread of rmse (boxplot)
+spread across cv
+  
+scalability
+- how well it scales across different sizes
+- time code in r? how long models take to run (10%, 20, 50, 100)
+how steep the line is tells u how scalable the model is
+
+compare the models
+
+interpretability
+- something u need to say about the model
+
