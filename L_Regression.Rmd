@@ -16,6 +16,7 @@ library(cvTools)
 library(vcdExtra)
 library(corrplot)
 library(RColorBrewer)
+library(caret)
 ```
 
 Reading in the reef data:
@@ -82,12 +83,13 @@ glm
 Predicting accuracy
 
 accuracy
-- RMSE by CV
+- RMSE by CV (lower is better)
+The RMSE calculated by cross validation was 0.3508347. 
 
 stability
 - how different model performs across all models
-- spread of rmse (boxplot)
-spread across cv
+- spread of rmse (boxplot), spread across cv
+We want lower RMSE, high Rsquared and lower MAE to indicated how closely the model can predict actual observations.
   
 scalability
 - how well it scales across different sizes
@@ -98,4 +100,74 @@ compare the models
 
 interpretability
 - something u need to say about the model
+We can easily interpret the predictions of model through an equation from the coefficients
+
+
+```{r}
+## gets 0?
+accuracy <- function(true, predicted) {
+  # Calculates accuracy based on a vector of true labels and a vector of predictions
+  return(sum(true == predicted)/length(true))
+}
+
+X_combined = data %>% select(-bleached)
+y_combined = data %>% pull(bleached)
+
+cvK = 5    # Number of CV folds
+n_sim = 50 # Number of repeats
+cv_accuracy_overall = numeric(n_sim) # Vector to store averaged CV accuracies
+
+for (i in 1:n_sim) {
+  
+  cvSets = cvFolds(nrow(data), cvK) # Folds object for cross-validation
+  cv_accuracy_folds = numeric(cvK) # Vector to store accuracy for each fold
+  
+  for (j in 1:cvK) {
+    
+    test_id = cvSets$subsets[cvSets$which == j]
+    train = data[-test_id,] # Don't split training set to match glm syntax
+    X_test = X_combined[test_id,]
+    y_test = y_combined[test_id]
+    
+    current_lr_fit = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
+    
+    predicted_probs = predict(current_lr_fit, X_test, 
+                              type = "response") # Predicting probability of stable
+    predictions = ifelse(round(predicted_probs) == 1, 
+                         "Stable", "Rejection") # Converting probabilities into categories
+    cv_accuracy_folds[j] = accuracy(y_test, predictions)
+    
+  }
+  
+  cv_accuracy_overall[i] = mean(cv_accuracy_folds)
+  
+}
+```
+
+```{r}
+round(mean(cv_accuracy_overall),2)
+```
+
+Using caret:
+```{r}
+# define training control
+train_control <- trainControl(method = "cv", number = 10, savePredictions = TRUE)
+
+# train the model on training set
+model <- train(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur,
+               data = data,
+               method = "glm",
+               trControl = train_control,
+               family=binomial())
+
+# print cv scores
+print(model)
+
+model$resample
+
+
+```
+
+
+
 
