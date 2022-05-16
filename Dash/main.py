@@ -7,8 +7,15 @@ import plotly.graph_objects as go
 import plotly.express as px
 from dash.dependencies import Input, Output
 import pandas as pd
+import rpy2.robjects as robjects
+from rpy2.robjects import numpy2ri, pandas2ri, globalenv
+from rpy2.robjects.packages import importr
+from rpy2.robjects import globalenv
 
 app = dash.Dash()
+
+
+lr_variables = ["ClimSST", "Temperature_Kelvin", "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency", "SSTA_Frequency_Standard_Deviation" ,"TSA_Frequency_Standard_Deviation" ,"mean_cur"]
 
 df = px.data.stocks()
 
@@ -91,11 +98,60 @@ app.layout = html.Div(children=[
         dcc.Graph(id='map_callback_test_map')
     ]),
 
-    # Our graph
-    html.Div(id="our_fig", children=[dcc.Graph(id="our_fig_figure", figure=our_fig)])
+    # Our graph: all data
+    html.Div(id="our_fig_all_data", children=[dcc.Graph(id="our_fig_figure", figure=our_fig)]),
+
+    # # Our graph: for prediction
+    html.Div(id="lr_prediction", children=[
+        html.Div([
+                    dcc.Input(
+                        id=_,
+                        type="number",
+                        placeholder="input " + _,
+                        debounce=True
+                    ) for _ in lr_variables
+                ]),
+        html.Br(),
+        html.Div(id="lr_predicted")
+    ])
 ]
 )
 
+
+r = robjects.r
+pandas2ri.activate()
+lr_model_path = "../Models/logistic.rds"
+lr_model = r.readRDS(lr_model_path)
+globalenv['lr_model'] = lr_model
+# Show prediction result with logistic regression model
+@app.callback(Output('lr_predicted', 'children'),
+              Input('ClimSST', 'value'),
+              Input('Temperature_Kelvin', 'value'),
+              Input("Temperature_Kelvin_Standard_Deviation", "value"),
+              Input("SSTA_Frequency", 'value'),
+              Input("SSTA_Frequency_Standard_Deviation", "value"),
+              Input("TSA_Frequency_Standard_Deviation", "value"),
+              Input("mean_cur", "value")
+              )
+def lr_figure(Climsst, Temperature_Kelvin, Temperature_Kelvin_Standard_Deviation, SSTA_Frequency,
+              SSTA_Frequency_Standard_Deviation, TSA_Frequency_Standard_Deviation, mean_cur):
+    # Create r test data frame
+
+    r('test_data <- data.frame(clim_sst=c(' + str(Climsst) + '),' +
+      'temperature_kelvin=c(' + str(Temperature_Kelvin) + '),' +
+      'temperature_kelvin_standard_deviation=c(' + str(Temperature_Kelvin_Standard_Deviation) + '),' +
+      'ssta_frequency=c(' + str(SSTA_Frequency) + '),' +
+      ' ssta_frequency_standard_deviation=c(' + str(SSTA_Frequency_Standard_Deviation) + '),' +
+      ' tsa_frequency_standard_deviation=c(' + str(TSA_Frequency_Standard_Deviation) + '),' +
+      ' mean_cur=c(' + str(mean_cur) + '))')
+    r('pred <- predict(lr_model, test_data, type="raw", probability=FALSE)')
+    predicted = r('pred')[0]
+    if predicted > 0.50:
+        #Bleach
+        return "Bleaching probability: " + str(predicted) + ". Bleaching should occur!!"
+    else:
+        #no bleach
+        return "Bleaching probability: " + str(predicted) + ". Bleaching should not occur!!"
 
 # Function for map with callback
 @app.callback(Output("map_callback_test_map", "figure"),
