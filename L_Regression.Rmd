@@ -168,6 +168,53 @@ model$resample
 
 ```
 
+Scalability:
+```{r}
+sample_10 <- data[sample(1:nrow(data), 27,
+   replace=FALSE),]
 
+start_time <- Sys.time()
 
+glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_10)
+
+end_time <- Sys.time()
+
+end_time - start_time
+```
+```{r}
+sample_50 <- data[sample(1:nrow(data), 135,
+   replace=FALSE),]
+
+start_time <- Sys.time()
+
+glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_50)
+
+end_time <- Sys.time()
+
+end_time - start_time
+```
+```{r}
+sample_70 <- data[sample(1:nrow(data), 189,
+   replace=FALSE),]
+
+start_time <- Sys.time()
+
+glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_70)
+
+end_time <- Sys.time()
+
+end_time - start_time
+```
+
+```{r}
+start_time <- Sys.time()
+
+glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
+
+end_time <- Sys.time()
+
+end_time - start_time
+
+```
+With our dataset, it doesn't seem like the model will take more than 1 second.
 
