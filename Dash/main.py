@@ -155,7 +155,7 @@ Logistic Regression Block
 # R objects for loading model and using R functionalities.
 r = robjects.r
 pandas2ri.activate()
-lr_model_path = "../Models/logistic.rds"
+lr_model_path = "../Models/Logistic Regression/logistic.rds"
 lr_model = r.readRDS(lr_model_path)
 globalenv['lr_model'] = lr_model
 # Dataframe for saving logistic regression models.
