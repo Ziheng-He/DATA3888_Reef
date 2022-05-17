@@ -146,7 +146,15 @@ app.layout = html.Div(children=[
     html.Br(),
 
     # Figure for logistic regression prediction
-    html.Div(html.H1("Visualization for logistic regression prediction")),
+    html.Div([
+        html.H1("Visualization for logistic regression prediction"),
+        html.H4("To make a prediction, please input the following value of the following variables \
+                in the boxes below in this order: "),
+        html.H5("Latitude of point, Longitude of point, Climatological SST, \
+             Temperature (in Kelvin), Standard deviation of temperature, SSTA frequency,\
+             Standard deviation of SSTA frequency and Currenty velocity.")
+        ]
+    ),
     html.Div(id="logistic_regression", children=[
         html.Div([
             dcc.Input(
@@ -185,14 +193,14 @@ Logistic Regression Block
 # R objects for loading model and using R functionalities.
 r = robjects.r
 pandas2ri.activate()
-lr_model_path = "../Models/logistic.rds"
+lr_model_path = "../Models/Logistic Regression/logistic.rds"
 lr_model = r.readRDS(lr_model_path)
 globalenv['lr_model'] = lr_model
 # Dataframe for saving logistic regression models.
 lr_df = pd.DataFrame(columns=['longitude', 'latitude', 'ClimSST', 'Temperature_Kelvin',
                               "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
                               "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
-                              "mean_cur", "prediction"])
+                              "mean_cur", "Prediction"])
 
 
 # Show prediction result with logistic regression model
@@ -237,18 +245,17 @@ def lr_figure(n_clicks, longitude, latitude, Climsst, Temperature_Kelvin, Temper
                                    Temperature_Kelvin_Standard_Deviation, SSTA_Frequency,
                                    SSTA_Frequency_Standard_Deviation, TSA_Frequency_Standard_Deviation, mean_cur, tag]
 
-    fig = px.scatter_geo(lr_df, lon="longitude", lat="latitude", color="prediction",
+    fig = px.scatter_geo(lr_df, lon="longitude", lat="latitude", color="Prediction",
                          color_discrete_map={"Bleaching should occur.": "red", "Bleaching should not occur.": "green"},
                          projection="natural earth",
                          size_max=10,
                          center={"lon": 147.6992, "lat": -18.2871},
                          width=900,
                          height=800,
-                         marker={},
                          custom_data=["latitude", "longitude", "ClimSST", "Temperature_Kelvin",
                                       "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
                                       "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
-                                      "mean_cur", "prediction"])
+                                      "mean_cur", "Prediction"])
     fig.update_layout(title="Prediction result using Logistic Regression")
     fig.update_traces(hovertemplate='<br>'.join(["Latitude: %{customdata[0]}",
                                                  "Longitude: %{customdata[1]}",
