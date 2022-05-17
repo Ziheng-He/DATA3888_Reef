@@ -21,7 +21,7 @@ library(caret)
 
 Reading in the reef data:
 ```{r}
-reef = read_csv("Data/Reef_Check_with_cortad_variables_with_annual_rate_of_SST_change.csv")
+#reef = read_csv("Data/Reef_Check_with_cortad_variables_with_annual_rate_of_SST_change.csv")
 
 new_reef = read_csv("Data/lr_version_merged_mean.csv")
 
