@@ -23,7 +23,7 @@ Reading in the reef data:
 ```{r}
 #reef = read_csv("Data/Reef_Check_with_cortad_variables_with_annual_rate_of_SST_change.csv")
 
-new_reef = read_csv("Data/lr_version_merged_mean.csv")
+new_reef = read_csv("Data_copy/lr_version_merged_mean.csv")
 
 # Check what the reef dataset looks like
 head(new_reef)
@@ -63,7 +63,7 @@ data$bleached <- ifelse(data$average_bleaching > 0, "1", "0")
 data %>% count(bleached)
 
 # Convert to numeric
-data$bleached <- as.numeric(data$bleached)
+data$bleached <- as.factor(data$bleached)
 
 ```
 
