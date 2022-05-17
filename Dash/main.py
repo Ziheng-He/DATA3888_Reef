@@ -42,33 +42,63 @@ ani_fig = px.scatter_geo(ani_df, locations="iso_alpha", color="continent",
                          projection="natural earth")
 ani_fig.update_layout(title="Example world map with animation")
 
-# Try with our data
+# Visualization of all data
 our_df = pd.read_csv("./lr_version_merged_mean.csv")
 our_df['Date'] = our_df['Month'].astype(str) + '-' + our_df['Year'].astype(str)
+our_df['Average_bleaching'] = ['Bleaching occurs' if x['Average_bleaching'] > 0 else "Bleaching does not occur" for
+                               idx, x in our_df.iterrows()]
 our_df = our_df.sort_values(['Year', 'Month'], ascending=True)
+# our_df_colors = ['rgb(238,75,43)', 'rgb(102,255,0)']
+# our_fig = go.Figure()
+# for color in our_df_colors:
+#     our_fig.add_trace(go.Scattergeo(
+#         lon=our_df["reef_longitude"], lat=our_df["reef_latitude"],
+#         marker={"size": [10] * our_df.shape[0],
+#                 "line": {"width": 2, "color": color},
+#
+#                 },
+#         animation_frame=our_df["Date"]
+#     ))
+
+# No control over bubble line
 our_fig = px.scatter_geo(our_df, lon="reef_longitude", lat="reef_latitude", color="mean_cur",
-                         hover_name="index", size=(our_df["Average_bleaching"] + 10) * 100,
+                         hover_name="index",
+                         # size=(our_df["Average_bleaching"] + 10) * 100,
                          projection="natural earth",
                          animation_frame="Date",
-                         center={"lon": 147.6992, "lat": -18.2871},
+                         # center={"lon": 147.6992, "lat": -18.2871},
                          width=900,
                          height=800,
-                         custom_data=['mean_cur', 'Average_bleaching', 'index', 'Date'])
-our_fig.update_layout(title="Example map with our data")
+                         custom_data=['mean_cur', 'Average_bleaching', 'index', 'Date',
+                                      'reef_longitude', 'reef_latitude'],
+                         range_color=[0, max(our_df['mean_cur'])]
+                         )
+
+our_fig.update_layout(title="Example map with our data",
+                      geo={"projection_scale": 5,
+                           "center": {"lat": -18.2871, "lon": 147.6992}
+                           }
+                      )
 # Update information shown in each frame when hovering over bubbles
 # Need this nasty code cause dash is finicky
 # https://stackoverflow.com/questions/67958555/plotly-express-animation-changes-in-hoverlabel-only-applied-for-the-first-frame
 our_fig.update_traces(hovertemplate='<br>'.join(["Current: %{customdata[0]}",
                                                  "Average Bleaching: %{customdata[1]}",
                                                  "Index: %{customdata[2]}",
-                                                 "Date: %{customdata[3]}"
-                                                 ])
+                                                 "Date: %{customdata[3]}",
+                                                 "Latitude: %{customdata[4]}",
+                                                 "Longitude: %{customdata[5]}"
+                                                 ]),
+                      marker={"size": 5, "line": {"width": 1, "color": 'rgb(40,40,40)'}}
                       )
+
 for f in our_fig.frames:
     f.data[0].update(hovertemplate='<br>'.join(["Current: %{customdata[0]}",
                                                 "Average Bleaching: %{customdata[1]}",
                                                 "Index: %{customdata[2]}",
-                                                "Date: %{customdata[3]}"
+                                                "Date: %{customdata[3]}",
+                                                "Latitude: %{customdata[4]}",
+                                                "Longitude: %{customdata[5]}"
                                                 ])
                      )
 
@@ -155,7 +185,7 @@ Logistic Regression Block
 # R objects for loading model and using R functionalities.
 r = robjects.r
 pandas2ri.activate()
-lr_model_path = "../Models/Logistic Regression/logistic.rds"
+lr_model_path = "../Models/logistic.rds"
 lr_model = r.readRDS(lr_model_path)
 globalenv['lr_model'] = lr_model
 # Dataframe for saving logistic regression models.
@@ -214,6 +244,7 @@ def lr_figure(n_clicks, longitude, latitude, Climsst, Temperature_Kelvin, Temper
                          center={"lon": 147.6992, "lat": -18.2871},
                          width=900,
                          height=800,
+                         marker={},
                          custom_data=["latitude", "longitude", "ClimSST", "Temperature_Kelvin",
                                       "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
                                       "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
