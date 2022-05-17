@@ -163,10 +163,16 @@ model <- train(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_sta
 # print cv scores
 print(model)
 
-model$resample
+accuracy_folds <- model$resample[1]
 
 
 ```
+Showing Stability in a boxplot:
+```{r}
+boxplot(accuracy_folds) + geom_jitter()
+```
+
+
 
 Scalability:
 ```{r}
@@ -174,13 +180,13 @@ Scalability:
 sample_10 <- data[sample(1:nrow(data), 27,
    replace=FALSE),]
 
-start_time <- Sys.time()
+start_time_10 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_10)
 
-end_time <- Sys.time()
+end_time_10 <- Sys.time()
 
-end_time - start_time
+time_10 = end_time_10 - start_time_10
 ```
 
 ```{r}
@@ -188,13 +194,13 @@ end_time - start_time
 sample_50 <- data[sample(1:nrow(data), 135,
    replace=FALSE),]
 
-start_time <- Sys.time()
+start_time_50 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_50)
 
-end_time <- Sys.time()
+end_time_50 <- Sys.time()
 
-end_time - start_time
+time_50 = end_time_50 - start_time_50
 ```
 
 ```{r}
@@ -202,27 +208,36 @@ end_time - start_time
 sample_70 <- data[sample(1:nrow(data), 189,
    replace=FALSE),]
 
-start_time <- Sys.time()
+start_time_70 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_70)
 
-end_time <- Sys.time()
+end_time_70 <- Sys.time()
 
-end_time - start_time
+time_70 = end_time_70 - start_time_70
 ```
 
 ```{r}
 #the whole data
-start_time <- Sys.time()
+start_time_100 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
 
-end_time <- Sys.time()
+end_time_100 <- Sys.time()
 
-end_time - start_time
+time_100 = end_time_100 - start_time_100
 
 ```
 With our dataset, it doesn't seem like the model will take more than 1 second.
+
+Modeling scalability in a line graph:
+```{r}
+time_df = data.frame(Sample_percent = c(10,50,70,100),
+                Time = c(time_10, time_50, time_70, time_100))
+
+#export to Zhenyu, convert to csv
+write.csv(time_df, "time_df.csv", row.names=FALSE)
+```
 
 
 ```{r}
