@@ -170,6 +170,7 @@ model$resample
 
 Scalability:
 ```{r}
+#Sampling 10% of the data
 sample_10 <- data[sample(1:nrow(data), 27,
    replace=FALSE),]
 
@@ -181,7 +182,9 @@ end_time <- Sys.time()
 
 end_time - start_time
 ```
+
 ```{r}
+#sampling 50% of data
 sample_50 <- data[sample(1:nrow(data), 135,
    replace=FALSE),]
 
@@ -193,7 +196,9 @@ end_time <- Sys.time()
 
 end_time - start_time
 ```
+
 ```{r}
+#sampling 70% of data
 sample_70 <- data[sample(1:nrow(data), 189,
    replace=FALSE),]
 
@@ -207,18 +212,19 @@ end_time - start_time
 ```
 
 ```{r}
+#the whole data
 start_time <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
 
-<<<<<<< HEAD
 end_time <- Sys.time()
 
 end_time - start_time
 
 ```
 With our dataset, it doesn't seem like the model will take more than 1 second.
-=======
+
+
 ```{r}
 path = "./Models/logistic"
 model_rds_path = paste(path, ".rds",sep='')
@@ -235,5 +241,5 @@ file_conn <- file(model_dep_path)
 writeLines("",file_conn)
 close(file_conn)
 ```
->>>>>>> e03cdc32db565098d63ab0e11ec5ffaa0d054628
+
 
