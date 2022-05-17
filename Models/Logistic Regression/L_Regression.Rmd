@@ -21,9 +21,9 @@ library(caret)
 
 Reading in the reef data:
 ```{r}
-reef = read_csv("Data/Reef_Check_with_cortad_variables_with_annual_rate_of_SST_change.csv")
+#reef = read_csv("Data/Reef_Check_with_cortad_variables_with_annual_rate_of_SST_change.csv")
 
-new_reef = read_csv("Data/lr_version_merged_mean.csv")
+new_reef = read_csv("Data_copy/lr_version_merged_mean.csv")
 
 # Check what the reef dataset looks like
 head(new_reef)
@@ -63,7 +63,7 @@ data$bleached <- ifelse(data$average_bleaching > 0, "1", "0")
 data %>% count(bleached)
 
 # Convert to numeric
-data$bleached <- as.numeric(data$bleached)
+data$bleached <- as.factor(data$bleached)
 
 ```
 
@@ -163,62 +163,83 @@ model <- train(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_sta
 # print cv scores
 print(model)
 
-model$resample
+accuracy_folds <- model$resample[1]
 
 
 ```
+Showing Stability in a boxplot:
+```{r}
+boxplot(accuracy_folds) + geom_jitter()
+```
+
+
 
 Scalability:
 ```{r}
+#Sampling 10% of the data
 sample_10 <- data[sample(1:nrow(data), 27,
    replace=FALSE),]
 
-start_time <- Sys.time()
+start_time_10 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_10)
 
-end_time <- Sys.time()
+end_time_10 <- Sys.time()
 
-end_time - start_time
+time_10 = end_time_10 - start_time_10
 ```
+
 ```{r}
+#sampling 50% of data
 sample_50 <- data[sample(1:nrow(data), 135,
    replace=FALSE),]
 
-start_time <- Sys.time()
+start_time_50 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_50)
 
-end_time <- Sys.time()
+end_time_50 <- Sys.time()
 
-end_time - start_time
+time_50 = end_time_50 - start_time_50
 ```
+
 ```{r}
+#sampling 70% of data
 sample_70 <- data[sample(1:nrow(data), 189,
    replace=FALSE),]
 
-start_time <- Sys.time()
+start_time_70 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = sample_70)
 
-end_time <- Sys.time()
+end_time_70 <- Sys.time()
 
-end_time - start_time
+time_70 = end_time_70 - start_time_70
 ```
 
 ```{r}
-start_time <- Sys.time()
+#the whole data
+start_time_100 <- Sys.time()
 
 glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
 
-<<<<<<< HEAD
-end_time <- Sys.time()
+end_time_100 <- Sys.time()
 
-end_time - start_time
+time_100 = end_time_100 - start_time_100
 
 ```
 With our dataset, it doesn't seem like the model will take more than 1 second.
-=======
+
+Modeling scalability in a line graph:
+```{r}
+time_df = data.frame(Sample_percent = c(10,50,70,100),
+                Time = c(time_10, time_50, time_70, time_100))
+
+#export to Zhenyu, convert to csv
+write.csv(time_df, "time_df.csv", row.names=FALSE)
+```
+
+
 ```{r}
 path = "./Models/logistic"
 model_rds_path = paste(path, ".rds",sep='')
@@ -235,5 +256,5 @@ file_conn <- file(model_dep_path)
 writeLines("",file_conn)
 close(file_conn)
 ```
->>>>>>> e03cdc32db565098d63ab0e11ec5ffaa0d054628
+
 
