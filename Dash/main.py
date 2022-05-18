@@ -19,7 +19,8 @@ import rpy2.robjects as robjects
 from rpy2.robjects import numpy2ri, pandas2ri, globalenv
 from rpy2.robjects.packages import importr
 import pickle
-from sklearn.ensemble import RandomForestClassifier
+
+# from sklearn.ensemble import RandomForestClassifier
 
 app = dash.Dash()
 
@@ -31,7 +32,12 @@ rf_variables = ["rf_latitude", "rf_longitude", "rf_ClimSST", "rf_Temperature_Kel
                 "rf_Temperature_Kelvin_Standard_Deviation", "rf_SSTA_Frequency",
                 "rf_SSTA_Frequency_Standard_Deviation", "rf_TSA_Frequency_Standard_Deviation", "rf_mean_cur"]
 
+svm_variables = ["svm_latitude", "svm_longitude", "svm_ClimSST", "svm_Temperature_Kelvin",
+                 "svm_Temperature_Kelvin_Standard_Deviation", "svm_SSTA_Frequency",
+                 "svm_SSTA_Frequency_Standard_Deviation", "svm_TSA_Frequency_Standard_Deviation", "svm_mean_cur"]
 
+
+# Create figure for prediction results based on dataframe given.
 def make_figure(df):
     fig = px.scatter_geo(df, lon="longitude", lat="latitude", color="Prediction",
                          color_discrete_map={"Bleaching should occur.": "red", "Bleaching should not occur.": "green"},
@@ -100,8 +106,8 @@ our_fig = px.scatter_geo(our_df, lon="reef_longitude", lat="reef_latitude", colo
                          projection="natural earth",
                          animation_frame="Date",
                          # center={"lon": 147.6992, "lat": -18.2871},
-                         width=900,
-                         height=800,
+                         width=800,
+                         height=700,
                          custom_data=['mean_cur', 'Average_bleaching', 'index', 'Date',
                                       'reef_longitude', 'reef_latitude'],
                          range_color=[0, max(our_df['mean_cur'])]
@@ -179,15 +185,14 @@ app.layout = html.Div(children=[
     html.Br(),
 
     # Figure for logistic regression prediction
-    html.Div([
-        html.H1("Part 2 - Visualization for logistic regression prediction"),
-        html.H3("To make a prediction, please input the following value of the following variables \
+    html.Div([html.H1("Part 2 - Visualization for Logistic Regression prediction"),
+              html.H3("To make a prediction, please input the following value of the following variables \
                 in the boxes below in this order: "),
-        html.H5("Latitude of point, Longitude of point, Climatological SST, \
+              html.H5("Latitude of point, Longitude of point, Climatological SST, \
              Temperature (in Kelvin), Standard deviation of temperature, SSTA frequency,\
              Standard deviation of SSTA frequency and Currenty velocity.")
-    ]
-    ),
+              ]
+             ),
     html.Div(id="logistic_regression", children=[
         html.Div([
             dcc.Input(
@@ -207,7 +212,7 @@ app.layout = html.Div(children=[
     ]),
 
     # Figure for random forest
-    html.Div([html.H1("Part 3 - Visualization for random forest prediction"),
+    html.Div([html.H1("Part 3 - Visualization for Random Forest prediction"),
               html.H3("To make a prediction, please input the following value of the following variables \
                 in the boxes below in this order: "),
               html.H5("Latitude of point, Longitude of point, Climatological SST, \
@@ -228,25 +233,33 @@ app.layout = html.Div(children=[
         html.Div(id='rf_latest_prediction'),
         html.Br(),
         html.Div(id="rf_figure")
+    ]),
+
+    # Figure for SVM
+    html.Div([html.H1("Part 4 - Visualization for SVM prediction"),
+              html.H3("To make a prediction, please input the following value of the following variables \
+                    in the boxes below in this order: "),
+              html.H5("Latitude of point, Longitude of point, Climatological SST, \
+                 Temperature (in Kelvin), Standard deviation of temperature, SSTA frequency,\
+                 Standard deviation of SSTA frequency and Currenty velocity.")]),
+    html.Div(id="svm", children=[
+        html.Div([
+            dcc.Input(
+                id=_,
+                type="number",
+                placeholder="input " + _,
+                debounce=True
+            ) for _ in svm_variables
+        ]),
+        html.Button('Predict', id="svm_predict_button"),
+        html.Br(),
+        html.Br(),
+        html.Div(id='svm_latest_prediction'),
+        html.Br(),
+        html.Div(id="svm_figure")
     ])
 ]
 )
-
-
-# """
-# Logistic Regression Block
-# """
-# # R objects for loading model and using R functionalities.
-# r = robjects.r
-# pandas2ri.activate()
-# lr_model_path = "../Models/Logistic Regression/logistic.rds"
-# lr_model = r.readRDS(lr_model_path)
-# globalenv['lr_model'] = lr_model
-# # Dataframe for saving logistic regression predictions.
-# lr_df = pd.DataFrame(columns=['longitude', 'latitude', 'ClimSST', 'Temperature_Kelvin',
-#                               "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
-#                               "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
-#                               "mean_cur", "Prediction"])
 
 
 # Show prediction result with logistic regression model
@@ -266,6 +279,7 @@ app.layout = html.Div(children=[
 def lr_figure(n_clicks, lr_longitude, lr_latitude, lr_Climsst, lr_Temperature_Kelvin,
               lr_Temperature_Kelvin_Standard_Deviation, lr_SSTA_Frequency, lr_SSTA_Frequency_Standard_Deviation,
               lr_TSA_Frequency_Standard_Deviation, lr_mean_cur):
+
     global lr_df
 
     if n_clicks is None:
@@ -295,36 +309,35 @@ def lr_figure(n_clicks, lr_longitude, lr_latitude, lr_Climsst, lr_Temperature_Ke
                                    lr_Temperature_Kelvin_Standard_Deviation, lr_SSTA_Frequency,
                                    lr_SSTA_Frequency_Standard_Deviation, lr_TSA_Frequency_Standard_Deviation,
                                    lr_mean_cur, tag]
-
-    fig = px.scatter_geo(lr_df, lon="longitude", lat="latitude", color="Prediction",
-                         color_discrete_map={"Bleaching should occur.": "red", "Bleaching should not occur.": "green"},
-                         projection="natural earth",
-                         size_max=10,
-                         center={"lon": 147.6992, "lat": -18.2871},
-                         width=900,
-                         height=800,
-                         custom_data=["latitude", "longitude", "ClimSST", "Temperature_Kelvin",
-                                      "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
-                                      "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
-                                      "mean_cur", "Prediction"])
-    fig.update_layout(title="Prediction result using Logistic Regression")
-    fig.update_traces(hovertemplate='<br>'.join(["Latitude: %{customdata[0]}",
-                                                 "Longitude: %{customdata[1]}",
-                                                 "ClimSST: %{customdata[2]}",
-                                                 "Temperature Kelvin: %{customdata[3]}",
-                                                 "Temperature Kelvin SD: %{customdata[4]}",
-                                                 "SSTA Frequency: %{customdata[5]}",
-                                                 "SSTA Frequency SD: %{customdata[6]}",
-                                                 "TSA Frequency SD: %{customdata[7]}",
-                                                 "Current Velocity: %{customdata[8]}",
-                                                 "Prediction: %{customdata[9]}"]))
+    fig = make_figure(lr_df)
+    # fig = px.scatter_geo(lr_df, lon="longitude", lat="latitude", color="Prediction",
+    #                      color_discrete_map={"Bleaching should occur.": "red", "Bleaching should not occur.": "green"},
+    #                      projection="natural earth",
+    #                      size_max=10,
+    #                      center={"lon": 147.6992, "lat": -18.2871},
+    #                      width=900,
+    #                      height=800,
+    #                      custom_data=["latitude", "longitude", "ClimSST", "Temperature_Kelvin",
+    #                                   "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
+    #                                   "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
+    #                                   "mean_cur", "Prediction"])
+    # fig.update_layout(title="Prediction result using Logistic Regression")
+    # fig.update_traces(hovertemplate='<br>'.join(["Latitude: %{customdata[0]}",
+    #                                              "Longitude: %{customdata[1]}",
+    #                                              "ClimSST: %{customdata[2]}",
+    #                                              "Temperature Kelvin: %{customdata[3]}",
+    #                                              "Temperature Kelvin SD: %{customdata[4]}",
+    #                                              "SSTA Frequency: %{customdata[5]}",
+    #                                              "SSTA Frequency SD: %{customdata[6]}",
+    #                                              "TSA Frequency SD: %{customdata[7]}",
+    #                                              "Current Velocity: %{customdata[8]}",
+    #                                              "Prediction: %{customdata[9]}"]))
     return dcc.Graph(figure=fig), \
            "Latest prediction result: " + tag + " at long: " + str(lr_longitude) + ", lat: " + str(lr_latitude)
 
 
 # Show prediction result with random forest model
 @app.callback(Output('rf_figure', 'children'),
-              # Output("lr_predicted_figure", "figure"),
               Output("rf_latest_prediction", 'children'),
               Input("rf_predict_button", 'n_clicks'),
               State("rf_longitude", "value"),
@@ -340,6 +353,7 @@ def lr_figure(n_clicks, lr_longitude, lr_latitude, lr_Climsst, lr_Temperature_Ke
 def rf_figure(n_clicks, rf_longitude, rf_latitude, rf_Climsst, rf_Temperature_Kelvin,
               rf_Temperature_Kelvin_Standard_Deviation, rf_SSTA_Frequency, rf_SSTA_Frequency_Standard_Deviation,
               rf_TSA_Frequency_Standard_Deviation, rf_mean_cur):
+
     global rf_df
 
     if n_clicks is None:
@@ -371,31 +385,89 @@ def rf_figure(n_clicks, rf_longitude, rf_latitude, rf_Climsst, rf_Temperature_Ke
                                    rf_Temperature_Kelvin_Standard_Deviation, rf_SSTA_Frequency,
                                    rf_SSTA_Frequency_Standard_Deviation, rf_TSA_Frequency_Standard_Deviation,
                                    rf_mean_cur, tag]
-
-    fig = px.scatter_geo(rf_df, lon="longitude", lat="latitude", color="Prediction",
-                         color_discrete_map={"Bleaching should occur.": "red", "Bleaching should not occur.": "green"},
-                         projection="natural earth",
-                         size_max=10,
-                         center={"lon": 147.6992, "lat": -18.2871},
-                         width=900,
-                         height=800,
-                         custom_data=["latitude", "longitude", "ClimSST", "Temperature_Kelvin",
-                                      "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
-                                      "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
-                                      "mean_cur", "Prediction"])
-    fig.update_layout(title="Prediction result using Random Forest")
-    fig.update_traces(hovertemplate='<br>'.join(["Latitude: %{customdata[0]}",
-                                                 "Longitude: %{customdata[1]}",
-                                                 "ClimSST: %{customdata[2]}",
-                                                 "Temperature Kelvin: %{customdata[3]}",
-                                                 "Temperature Kelvin SD: %{customdata[4]}",
-                                                 "SSTA Frequency: %{customdata[5]}",
-                                                 "SSTA Frequency SD: %{customdata[6]}",
-                                                 "TSA Frequency SD: %{customdata[7]}",
-                                                 "Current Velocity: %{customdata[8]}",
-                                                 "Prediction: %{customdata[9]}"]))
+    fig = make_figure(rf_df)
+    # fig = px.scatter_geo(rf_df, lon="longitude", lat="latitude", color="Prediction",
+    #                      color_discrete_map={"Bleaching should occur.": "red", "Bleaching should not occur.": "green"},
+    #                      projection="natural earth",
+    #                      size_max=10,
+    #                      center={"lon": 147.6992, "lat": -18.2871},
+    #                      width=900,
+    #                      height=800,
+    #                      custom_data=["latitude", "longitude", "ClimSST", "Temperature_Kelvin",
+    #                                   "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
+    #                                   "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
+    #                                   "mean_cur", "Prediction"])
+    # fig.update_layout(title="Prediction result using Random Forest")
+    # fig.update_traces(hovertemplate='<br>'.join(["Latitude: %{customdata[0]}",
+    #                                              "Longitude: %{customdata[1]}",
+    #                                              "ClimSST: %{customdata[2]}",
+    #                                              "Temperature Kelvin: %{customdata[3]}",
+    #                                              "Temperature Kelvin SD: %{customdata[4]}",
+    #                                              "SSTA Frequency: %{customdata[5]}",
+    #                                              "SSTA Frequency SD: %{customdata[6]}",
+    #                                              "TSA Frequency SD: %{customdata[7]}",
+    #                                              "Current Velocity: %{customdata[8]}",
+    #                                              "Prediction: %{customdata[9]}"]))
     return dcc.Graph(figure=fig), \
            "Latest prediction result: " + tag + " at long: " + str(rf_longitude) + ", lat: " + str(rf_latitude)
+
+
+# Show prediction result with random forest model
+@app.callback(Output('svm_figure', 'children'),
+              Output("svm_latest_prediction", 'children'),
+              Input("svm_predict_button", 'n_clicks'),
+              State("svm_longitude", "value"),
+              State("svm_latitude", "value"),
+              State('svm_ClimSST', 'value'),
+              State('svm_Temperature_Kelvin', 'value'),
+              State("svm_Temperature_Kelvin_Standard_Deviation", "value"),
+              State("svm_SSTA_Frequency", 'value'),
+              State("svm_SSTA_Frequency_Standard_Deviation", "value"),
+              State("svm_TSA_Frequency_Standard_Deviation", "value"),
+              State("svm_mean_cur", "value")
+              )
+def svm_figure(n_clicks, svm_longitude, svm_latitude, svm_Climsst, svm_Temperature_Kelvin,
+               svm_Temperature_Kelvin_Standard_Deviation, svm_SSTA_Frequency, svm_SSTA_Frequency_Standard_Deviation,
+               svm_TSA_Frequency_Standard_Deviation, svm_mean_cur):
+
+    global svm_df
+
+    if n_clicks is None:
+        if len(svm_df) == 0:
+            raise PreventUpdate
+        else:
+            return dcc.Graph(figure=make_figure(svm_df)), ''
+
+    # Create test data frame
+    test_df = pd.DataFrame(columns=['ClimSST', 'Temperature_Kelvin',
+                                    "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
+                                    "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
+                                    "mean_cur"])
+    # test_df.loc[len(test_df.index)] = [svm_Climsst, svm_Temperature_Kelvin,
+    #                                    svm_Temperature_Kelvin_Standard_Deviation, svm_SSTA_Frequency,
+    #                                    svm_SSTA_Frequency_Standard_Deviation, svm_TSA_Frequency_Standard_Deviation,
+    #                                    svm_mean_cur]
+    test_df = [[svm_Climsst, svm_Temperature_Kelvin,
+                                       svm_Temperature_Kelvin_Standard_Deviation, svm_SSTA_Frequency,
+                                       svm_SSTA_Frequency_Standard_Deviation, svm_TSA_Frequency_Standard_Deviation,
+                                       svm_mean_cur]]
+
+    # Make prediction
+    predicted = svm_model.predict(test_df)[0]
+    if predicted == 0:
+        tag = "Bleaching should occur"
+    else:
+        tag = "Bleaching should not occur"
+
+    # Add data to dataframe
+    svm_df.loc[len(svm_df.index)] = [svm_longitude, svm_latitude, svm_Climsst, svm_Temperature_Kelvin,
+                                   svm_Temperature_Kelvin_Standard_Deviation, svm_SSTA_Frequency,
+                                   svm_SSTA_Frequency_Standard_Deviation, svm_TSA_Frequency_Standard_Deviation,
+                                   svm_mean_cur, tag]
+    fig = make_figure(svm_df)
+
+    return dcc.Graph(figure=fig), \
+           "Latest prediction result: " + tag + " at long: " + str(svm_longitude) + ", lat: " + str(svm_latitude)
 
 
 # Function for map with callback
@@ -451,4 +523,17 @@ if __name__ == '__main__':
                                   "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
                                   "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
                                   "mean_cur", "Prediction"])
+
+    """
+    SVM Block
+    """
+    svm_model_path = "../Models/SVM/svm.pickle"
+    svm_model = pickle.load(open(svm_model_path, 'rb'))
+    # Dataframe for saving svm predictions
+    svm_df = pd.DataFrame(columns=['longitude', 'latitude', 'ClimSST', 'Temperature_Kelvin',
+                                   "Temperature_Kelvin_Standard_Deviation", "SSTA_Frequency",
+                                   "SSTA_Frequency_Standard_Deviation", "TSA_Frequency_Standard_Deviation",
+                                   "mean_cur", "Prediction"])
+
+    # Run app
     app.run_server(port=8000)
