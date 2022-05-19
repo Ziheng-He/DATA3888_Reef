@@ -1,0 +1,14 @@
+accuracies,std_accuracies,,accuracy,,train size,time,,variables,feature importances
+0.85496454,0.032344887,,0.871736545,,10%,0.007006407,,ClimSST,0.228826
+0.79106066,,,,,50%,0.012011051,,Temperature_Kelvin,0.179024
+0.86626463,,,,,70%,0.01401186,,SSTA_Frequency_Standard_Deviation,0.176585
+0.87903512,,,,,100%,0.005004406,,SSTA_Frequency,0.164451
+0.87619723,,,,,,,,Temperature_Kelvin_Standard_Deviation,0.134452
+,,,,,,,,TSA_Frequency_Standard_Deviation,0.111254
+,,,,,,,,mean_cur,0.005407
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,

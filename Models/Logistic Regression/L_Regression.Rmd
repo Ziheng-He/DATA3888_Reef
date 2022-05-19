@@ -9,9 +9,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyr)
 library(dplyr)
 library(tidyverse)
+library(maps)
 
 library(sjPlot)
 library(cvTools)
+library(ozmaps)
 
 library(vcdExtra)
 library(corrplot)
@@ -54,6 +56,27 @@ data$temperature_celcius <- data$temperature_kelvin - 273.15
 ## longitude and latitude maximum and minimum to match dataset
 ```
 
+map visualisation
+```{r}
+world <- map_data("world")
+oz_states <- ozmap_states
+
+ggplot(oz_states) + geom_sf() + coord_sf() +
+  geom_point(
+    data = data,
+    aes(reef_longitude, reef_latitude, colour = bleached),
+    alpha = 0.7) + ggtitle("Amount of coral points bleached vs not bleached in the GBF") + 
+  ylab("Latitude") + xlab("Longitude") + scale_colour_manual(labels = c("not bleached", "bleached"), values = c("red", "blue"))
+
+ggplot(oz_states) + geom_sf() + coord_sf() +
+  geom_point(
+    data = data,
+    aes(reef_longitude, reef_latitude, size = average_bleaching, colour = average_bleaching),
+    alpha = 0.7) + ggtitle("Average coral bleaching along the GBF") + 
+  ylab("Latitude") + xlab("Longitude")
+
+```
+
 Assumption: For the logistic regression, the predictors are meant to be binary. So we convert the entries of average_bleaching >0 to be 1.
 ```{r}
 # We have to sort out bleached and not bleached corals
@@ -64,7 +87,6 @@ data %>% count(bleached)
 
 # Convert to numeric
 data$bleached <- as.factor(data$bleached)
-
 ```
 
 Assumption: Observations from the dataset can be related to each other?
@@ -103,55 +125,10 @@ interpretability
 We can easily interpret the predictions of model through an equation from the coefficients
 
 
-```{r}
-## gets 0?
-accuracy <- function(true, predicted) {
-  # Calculates accuracy based on a vector of true labels and a vector of predictions
-  return(sum(true == predicted)/length(true))
-}
-
-X_combined = data %>% select(-bleached)
-y_combined = data %>% pull(bleached)
-
-cvK = 5    # Number of CV folds
-n_sim = 50 # Number of repeats
-cv_accuracy_overall = numeric(n_sim) # Vector to store averaged CV accuracies
-
-for (i in 1:n_sim) {
-  
-  cvSets = cvFolds(nrow(data), cvK) # Folds object for cross-validation
-  cv_accuracy_folds = numeric(cvK) # Vector to store accuracy for each fold
-  
-  for (j in 1:cvK) {
-    
-    test_id = cvSets$subsets[cvSets$which == j]
-    train = data[-test_id,] # Don't split training set to match glm syntax
-    X_test = X_combined[test_id,]
-    y_test = y_combined[test_id]
-    
-    current_lr_fit = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
-    
-    predicted_probs = predict(current_lr_fit, X_test, 
-                              type = "response") # Predicting probability of stable
-    predictions = ifelse(round(predicted_probs) == 1, 
-                         "Stable", "Rejection") # Converting probabilities into categories
-    cv_accuracy_folds[j] = accuracy(y_test, predictions)
-    
-  }
-  
-  cv_accuracy_overall[i] = mean(cv_accuracy_folds)
-  
-}
-```
-
-```{r}
-round(mean(cv_accuracy_overall),2)
-```
-
-Using caret:
+Using caret for accuracy:
 ```{r}
 # define training control
-train_control <- trainControl(method = "cv", number = 10, savePredictions = TRUE)
+train_control <- trainControl(method = "cv", number = 5, savePredictions = TRUE)
 
 # train the model on training set
 model <- train(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur,
@@ -161,7 +138,10 @@ model <- train(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_sta
                family=binomial())
 
 # print cv scores
-print(model)
+print(model$results[2])
+
+
+model$resample
 
 accuracy_folds <- model$resample[1]
 
@@ -169,7 +149,9 @@ accuracy_folds <- model$resample[1]
 ```
 Showing Stability in a boxplot:
 ```{r}
-boxplot(accuracy_folds) + geom_jitter()
+accuracy_folds 
+
+boxplot(accuracy_folds) 
 ```
 
 
@@ -232,12 +214,41 @@ With our dataset, it doesn't seem like the model will take more than 1 second.
 
 Modeling scalability in a line graph:
 ```{r}
-time_df = data.frame(Sample_percent = c(10,50,70,100),
-                Time = c(time_10, time_50, time_70, time_100))
+time_df = data.frame(
+  Sample_percent = c(10,50,70,100),
+  Time = c(time_10, time_50, time_70, time_100))
 
-#export to Zhenyu, convert to csv
 write.csv(time_df, "time_df.csv", row.names=FALSE)
+
+write.table(model$results[2], "time_df.csv",
+            append = TRUE,
+            sep = ",",
+            col.names = "accuracy",
+            row.names = TRUE,
+            quote = FALSE)
+
+write.table(accuracy_folds[[1]], "time_df.csv",
+            append = TRUE,
+            sep = ",",
+            col.names = "acc_5_f",
+            row.names = TRUE,
+            quote = FALSE)
 ```
+
+```{r}
+sample_p = c(10,50,70,100)
+time_p = c(time_10, time_50, time_70, time_100)
+acc = model$results[2]
+acc_5_f <- accuracy_folds[[1]]
+
+length(sample_p) <- length(acc_5_f)
+length(time_p) <- length(acc_5_f)
+length(acc) <- length(acc_5_f)
+
+write.table(cbind(sample_p,time_p,acc,acc_5_f), 
+file="lr.csv",row.names=F,col.names=c('sample_percent','time', 'accuracy','accuracy_5_folds'))
+```
+
 
 
 ```{r}
@@ -257,4 +268,5 @@ writeLines("",file_conn)
 close(file_conn)
 ```
 
-
+- there is more bleached points than unbleached points in the great barrier reef
+- logistic regression isnt a good presentation of the log odds of this data. as the accuracy is 82% lower than 83%(which was proportion of bleached/total data). Since RF has highest accuracy, we will be using that one.
