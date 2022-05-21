@@ -171,6 +171,18 @@ accuracy_folds
 
 boxplot(accuracy_folds) 
 ```
+Compare accuracy with:
+```{r}
+#1:
+data %>% count(bleached)
+data_accuracy_score = 226/(226+45)
+data_accuracy_score
+
+#2:
+model_accuracy = model$results[[2]]
+model_accuracy
+```
+
 
 
 
