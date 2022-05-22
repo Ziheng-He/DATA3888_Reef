@@ -10,6 +10,7 @@ library(tidyr)
 library(dplyr)
 library(tidyverse)
 library(maps)
+library(ggplot2)
 
 library(sjPlot)
 library(cvTools)
@@ -41,8 +42,11 @@ data = new_reef %>% janitor::clean_names()
 
 names(data)
 ```
+
+
 - Removing NA rows, we cannot work with missing values that we cannot access from the dataset
 - Converting format of entries in the variables we can use
+
 ```{r}
 ## removing NA data entries
 data <- na.omit(data)
@@ -55,6 +59,20 @@ data$temperature_celcius <- data$temperature_kelvin - 273.15
 
 ## longitude and latitude maximum and minimum to match dataset
 ```
+
+
+Assumption: For the logistic regression, the predictors are meant to be binary. So we convert the entries of average_bleaching >0 to be 1.
+```{r}
+# We have to sort out bleached and not bleached corals
+data$bleached <- ifelse(data$average_bleaching > 0, "1", "0")
+# 0 = not bleached
+# 1 = bleached
+data %>% count(bleached)
+
+# Convert to numeric
+data$bleached <- as.factor(data$bleached)
+```
+
 
 map visualisation
 ```{r}
@@ -77,18 +95,6 @@ ggplot(oz_states) + geom_sf() + coord_sf() +
 
 ```
 
-Assumption: For the logistic regression, the predictors are meant to be binary. So we convert the entries of average_bleaching >0 to be 1.
-```{r}
-# We have to sort out bleached and not bleached corals
-data$bleached <- ifelse(data$average_bleaching > 0, "1", "0")
-# 0 = not bleached
-# 1 = bleached
-data %>% count(bleached)
-
-# Convert to numeric
-data$bleached <- as.factor(data$bleached)
-```
-
 Assumption: Observations from the dataset can be related to each other?
 
 Assumption: Correlation 
@@ -102,6 +108,18 @@ summary(glm)
 
 glm
 ```
+
+trying to graph model:
+
+```{r, eval = FALSE}
+fit <- glm(bleached ~ mean_cur, family = binomial, data = data)
+fit
+ggplot(data, aes(x=mean_cur, y=as.numeric(as.character(bleached)))) + 
+  geom_point() +
+  stat_smooth(method="glm", se=FALSE, method.args = list(family="binomial"))
+```
+
+
 Predicting accuracy
 
 accuracy
@@ -153,6 +171,18 @@ accuracy_folds
 
 boxplot(accuracy_folds) 
 ```
+Compare accuracy with:
+```{r}
+#1:
+data %>% count(bleached)
+data_accuracy_score = 226/(226+45)
+data_accuracy_score
+
+#2:
+model_accuracy = model$results[[2]]
+model_accuracy
+```
+
 
 
 
@@ -251,7 +281,7 @@ file="lr.csv",row.names=F,col.names=c('sample_percent','time', 'accuracy','accur
 
 
 
-```{r}
+```{r, eval = FALSE}
 path = "./Models/logistic"
 model_rds_path = paste(path, ".rds",sep='')
 model_dep_path = paste(path, ".dep",sep='')
