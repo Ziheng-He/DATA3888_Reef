@@ -10,3 +10,9 @@
 1. Run the file with python at this path: ./Dash/main.py 
 
 2. Once the terminal prompts you with a localhost, click it to see the dash in your browser. 
+
+# Contribution
+Bryan (Ziheng He): Data merging, Dash, creating and managing repo.
+Kitty (490407529): .
+Ollie (): .
+Harry (): .
