@@ -11,7 +11,7 @@
 
 2. Once the terminal prompts you with a localhost, click it to see the dash in your browser. 
 
-# Contribution
+## Contribution
 Bryan (Ziheng He): Data merging, Dash, creating and managing repo.
 
 Kitty (490407529): .
