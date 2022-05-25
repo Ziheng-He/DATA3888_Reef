@@ -1,0 +1,8 @@
+accuracies,sd accuracies,,accuracy,,variables,coefficient
+0.849056604,0.0791179,,0.830188679,,ClimSST,8.30E-05
+0.830188679,,,,,Temperature_Kelvin,-1.72E-06
+0.830188679,,,,,Temperature_Kelvin_Standard_Deviation,1.65E-04
+0.679245283,,,,,SSTA_Frequency,7.73E-05
+0.791179,,,,,SSTA_Frequency_Standard_Deviation,2.88E-04
+,,,,,TSA_Frequency_Standard_Deviation,-2.05E-04
+,,,,,mean_cur,-1.89E-05
