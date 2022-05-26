@@ -1,10 +1,94 @@
 ---
-title: "Report"
+title: "Reef P2 - Report"
 output: html_document
 date: '2022-05-25'
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Executive Summary
+
+```
+- Short description of the problem.
+- The main findings. (in report part)
+- Key figure if appropriate. (in report part?)
+- The practical relevance of the analysis.
+
+A clear description of the problem, articulating the aim of this project. Provides appropriate multidisciplinary context and motivational background explained well in an appropriate language.
+```
+
+We know that warmer ocean temperatures linked to climate change are the primary factors in coral bleaching. In the interdisciplinary project with the MARS students, we identified an interesting correlation between ocean currents, thermal activity, and its effect on coral. However, conflicting literature states that, while ocean currents can transport excess nutrients that make corals more susceptible to bleaching (DeCarlo et al., 2020), stronger currents can also flush out toxins aiding in the process of coral recovery (Nakamura et al., 2003).
+
+Our team looked at the relationship between average ocean current velocity and the effect it has on the bleaching of corals in the Great Barrier Reef. In doing so, we can confirm our hypothesis that ocean currents do have a significant impact on coral bleaching. The overall aim was to implement different classification models on Python Dash to enable marine scientists to predict and visualize the chance of coral bleaching given specific parameters within the Great Barrier Reef. This will allow further attention on areas where corals are more susceptible to stressing factors.
+
+
+# Report
+
+```
+- Communicate the results to a general scientist, note this is different to the target audience of your product. 
+- A clear description of your innovation and approach to the scientific problem.
+- Include all relevant data summaries only.
+- What is your approach and which tools are used and why? 
+- What are the key findings? and use figures to illustrate the results.
+- How robust and generalizable is your finding or your product?
+- Main code and technical details of your approach in the appendix.
+```
+
+### Method
+
+```
+Clear description of the approach in data collection, developed model, the evaluation strategies from a data-science perspective. Here we refer to all types of evaluation metrics including graphical, qualitative and quantitative metric.
+
+Reef project - Clear description of the approach in data collection to address appropriate research questions, developed model, the evaluation strategies from a marine science perspective,
+```
+
+Model stuff....
+
+### Results
+
+```
+A clear justification of the final approach based on the proposed evaluation strategies. Ensuring multiple evaluation strategies are used.
+
+A clear description of the deployment process. An engaging and clear illustration of the product (games, shiny app, learning device etc) with a discussion of concepts from multiple disciplines.
+```
+
+python dash stuff..
+
+### Innovation
+
+blahlafafbla
+
+# Discussion
+
+```
+Discussion of potential shortcomings or issues associated with the development process or the product with reference to both disciplines. Identification of future work or improvement in both disciplines. Conclusion adequately summarises the project and identification of future work.
+```
+
+### Limitations
+... blah blah only average ocean velocity not direction etc
+- only the GBF
+- issues
+
+### Future work
+
+# Appendix
+
+# Student contributions  
+(50-200 words)
+
+# References
+
+- https://www.barrierreef.org/the-reef/threats/coral-bleaching 
+- https://oceanservice.noaa.gov/facts/coral_bleach.html 
+- DeCarlo ...
+- Nakamura ...
+
+```
+# Presentation
+- Correct grammar
+- All figures and tables captioned, axes, headings, legends
+- Only show necessary figures (Appendix)
 ```
 
