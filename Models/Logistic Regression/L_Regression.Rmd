@@ -20,6 +20,8 @@ library(vcdExtra)
 library(corrplot)
 library(RColorBrewer)
 library(caret)
+require(gridExtra)
+
 ```
 
 Reading in the reef data:
@@ -91,13 +93,59 @@ ggplot(oz_states) + geom_sf() + coord_sf() +
     data = data,
     aes(reef_longitude, reef_latitude, size = average_bleaching, colour = average_bleaching),
     alpha = 0.7) + ggtitle("Average coral bleaching along the GBF") + 
-  ylab("Latitude") + xlab("Longitude")
+  ylab("Latitude") + xlab("Longitude") 
 
 ```
 
 Assumption: Observations from the dataset can be related to each other?
 
 Assumption: Correlation 
+```{r, include = FALSE, eval = FALSE}
+# Split the data into training and test set
+set.seed(123)
+training.samples <- data$bleached %>% 
+  createDataPartition(p = 0.8, list = FALSE)
+train.data  <- data[training.samples, ]
+test.data <- data[-training.samples, ]
+
+# Fit the model
+model <- glm( bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, data = train.data, family = binomial)
+# Summarize the model
+summary(model)
+# Make predictions
+probabilities <- model %>% predict(test.data, type = "response")
+predicted.classes <- ifelse(probabilities > 0, "pos", "neg")
+# Model accuracy
+mean <- mean(predicted.classes == test.data$bleached)
+mean
+```
+
+```{r}
+data %>%
+  ggplot(mapping = aes(x = mean_cur, y = average_bleaching)) +
+  geom_point(aes(colour = bleached)) +
+  geom_smooth(method = lm)
+```
+
+```{r}
+
+```
+
+
+
+do i use train data or whole data??
+```{r}
+# for model prediction
+model <- glm(bleached ~ mean_cur, data = train.data, family = binomial)
+summary(model)$coef
+
+
+# to see if variables are significant
+model2 <- glm(bleached ~ mean_cur, data = data, family = binomial)
+summary(model2)$coef
+
+```
+
 
 
 Fitting the Logistic Regression:
@@ -146,6 +194,7 @@ We can easily interpret the predictions of model through an equation from the co
 Using caret for accuracy:
 ```{r}
 # define training control
+set.seed(1)
 train_control <- trainControl(method = "cv", number = 5, savePredictions = TRUE)
 
 # train the model on training set

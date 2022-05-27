@@ -1,30 +1,64 @@
 ---
 title: "Reef P2 - Report"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
 date: '2022-05-25'
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+#libraries
+library(tidyr)
+library(dplyr)
+library(tidyverse)
+library(maps)
+library(ggplot2)
+library(sjPlot)
+library(cvTools)
+library(ozmaps)
+library(vcdExtra)
+library(corrplot)
+library(RColorBrewer)
+library(caret)
+```
+
+```{r read_data, echo = FALSE, warning = FALSE, message = FALSE, include = FALSE}
+# Reading data
+setwd('..')
+new_reef = read_csv("./Data/lr_version_merged_mean.csv")
+
+# Cleaning names
+data = new_reef %>% janitor::clean_names()
+
+## removing NA data entries
+data <- na.omit(data)
+
+## changing date to date
+# data$date <- as.Date(data$date, format = "%d-%b-%y")
+
+# Convert bleached
+data$bleached <- ifelse(data$average_bleaching > 0, "1", "0")
+# 0 = not bleached
+# 1 = bleached
+data %>% count(bleached)
+
+# Convert to numeric
+data$bleached <- as.factor(data$bleached)
+
 ```
 
 # Executive Summary
 
-```
-- Short description of the problem.
-- The main findings. (in report part)
-- Key figure if appropriate. (in report part?)
-- The practical relevance of the analysis.
 
-A clear description of the problem, articulating the aim of this project. Provides appropriate multidisciplinary context and motivational background explained well in an appropriate language.
-```
-
-We know that warmer ocean temperatures linked to climate change are the primary factors in coral bleaching. In the interdisciplinary project with the MARS students, we identified an interesting correlation between ocean currents, thermal activity, and its effect on coral. However, conflicting literature states that, while ocean currents can transport excess nutrients that make corals more susceptible to bleaching (DeCarlo et al., 2020), stronger currents can also flush out toxins aiding in the process of coral recovery (Nakamura et al., 2003).
+We know that warmer ocean temperatures linked to climate change are the primary factors in coral bleaching. In the interdisciplinary project with the MARS students, we identified an interesting correlation between ocean currents, thermal activity, and its effect on coral. However, upon further research, conflicting literature states that, while ocean currents can transport excess nutrients that make corals more susceptible to bleaching (DeCarlo et al., 2020), stronger currents can also flush out toxins aiding in the process of coral recovery (Nakamura et al., 2003).
 
 Our team looked at the relationship between average ocean current velocity and the effect it has on the bleaching of corals in the Great Barrier Reef. In doing so, we can confirm our hypothesis that ocean currents do have a significant impact on coral bleaching. The overall aim was to implement different classification models on Python Dash to enable marine scientists to predict and visualize the chance of coral bleaching given specific parameters within the Great Barrier Reef. This will allow further attention on areas where corals are more susceptible to stressing factors.
 
-
-# Report
+# Method
 
 ```
 - Communicate the results to a general scientist, note this is different to the target audience of your product. 
@@ -36,23 +70,60 @@ Our team looked at the relationship between average ocean current velocity and t
 - Main code and technical details of your approach in the appendix.
 ```
 
-### Method
+### Data Collection - Bryan
 
 ```
 Clear description of the approach in data collection, developed model, the evaluation strategies from a data-science perspective. Here we refer to all types of evaluation metrics including graphical, qualitative and quantitative metric.
 
 Reef project - Clear description of the approach in data collection to address appropriate research questions, developed model, the evaluation strategies from a marine science perspective,
 ```
+The data used in this project is merged from the DATA3888 Reef Check data as well as ocean current netCDF files taken from AIMS (Australian Institute of Marine Science). The ocean data was collated from the years 2017 to 2022? by month. 
 
-Model stuff....
+etc.
 
-### Results
+Figure 1
+
+### Models
+
+We tested our merged data on 3 classification models - Logistic Regression, Support Vector Machine and Random Forest. With average bleaching as the response model, we used the same variables for our 3 models. This included the variables:
+
+- ClimSST (Climatological Sea Surface Temperature)
+- Temperature_Kelvin (temperature in kelvin)
+- Temperature_Kelvin_Standard_Deviation
+- SSTA_Frequency (Sea Surface Temperature Anomaly)
+- SSTA_Frequency_Standard_Deviation
+- TSA_Frequency_Standard_Deviation
+- mean_cur (mean ocean current velocity)
+
+### Logistic Regression Model - Kitty
+
+We used a Logistic Regression Model to predict the outcome of bleaching against our chosen predictor variables from our merged data. Focusing on whether ocean current velocity would significantly impact the susceptibility of coral to bleaching, we take a closer look at the `mean_cur` value. Our logistic regression model is also used to model the binary outcome by returning an estimate of the probability of coral bleaching occurring between 0 and 1. 
+
+- interpretation of pvalue, mean curr or any other variables significant
+- coefficients
+
+
+
+### Support Vector Machine - Ollie
+
+
+### Random Forest - Zhenyu
+
+
+### Evaluation strategies
+
+Figure 2
+
+
+# Results
 
 ```
 A clear justification of the final approach based on the proposed evaluation strategies. Ensuring multiple evaluation strategies are used.
 
 A clear description of the deployment process. An engaging and clear illustration of the product (games, shiny app, learning device etc) with a discussion of concepts from multiple disciplines.
 ```
+The model evaluations showed our Random Forest model had the most accuracy in classifying whether coral bleaching would occur with from our chosen variables. With an overall accuracy of 87%, we have decided to implement this model as part of our final product. 
+
 
 python dash stuff..
 
@@ -73,7 +144,38 @@ Discussion of potential shortcomings or issues associated with the development p
 
 ### Future work
 
+# Conclusion
+
 # Appendix
+
+### Figure 1 {.tabset}
+
+Here, we have graphed an initial look at our data.
+
+#### Coral bleaching
+```{r, warning = FALSE, message = FALSE}
+world <- map_data("world")
+oz_states <- ozmap_states
+
+ggplot(oz_states) + geom_sf() + coord_sf() +
+  geom_point(
+    data = data,
+    aes(reef_longitude, reef_latitude, colour = bleached),
+    alpha = 0.7) + ggtitle("Amount of coral points bleached vs not bleached in the GBF") + 
+  ylab("Latitude") + xlab("Longitude") + scale_colour_manual(labels = c("not bleached", "bleached"), values = c("red", "blue"))
+```
+
+#### Average coral bleaching
+```{r}
+ggplot(oz_states) + geom_sf() + coord_sf() +
+  geom_point(
+    data = data,
+    aes(reef_longitude, reef_latitude, size = average_bleaching, colour = average_bleaching),
+    alpha = 0.7) + ggtitle("Average coral bleaching along the GBF") + 
+  ylab("Latitude") + xlab("Longitude") 
+
+```
+
 
 # Student contributions  
 (50-200 words)
