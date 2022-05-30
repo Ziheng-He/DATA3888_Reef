@@ -147,6 +147,8 @@ Discussion of potential shortcomings or issues associated with the development p
 ... blah blah only average ocean velocity not direction etc
 - only the GBF
 - issues
+- only test merged data on 3 classification models, Random Forest model had the most accuracy in classifying whether coral bleaching would occur with from our chosen variables. With an overall accuracy of 87%, however we cannot guarantee that Random Forest model is the best fitting model .
+ocean currents can transport excess nutrients that make corals more susceptible to bleaching , stronger currents can also flush out toxins aiding in the process of coral recovery . But we only assume a relationship between average ocean current velocity and the effect it has on the bleaching of corals In the Great Barrier Reef, we can control the ocean currents within a certain range. When the collected ocean currents exceed a certain value, we can discard that part of the ocean currents data, and perhaps get a more accurate conclusion.
 
 ### Future work
 
