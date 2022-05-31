@@ -69,8 +69,11 @@ Our team looked at the relationship between average ocean current velocity and t
 - How robust and generalizable is your finding or your product?
 - Main code and technical details of your approach in the appendix.
 ```
+The classification methods used are logistic regression (LR), random forest (RF), support vector machine (SVM).
+Accuracy and feature selection were analyzed to determine which classifiers and features were best for classification of reef bleaching. After multiple evaluations, the random forest classifier is the most accurate for judging whether coral reefs are bleached. At the same time, the three models analyze the characteristic variables to determine the main variables that lead to coral reef bleaching. The motivation for the team to implement the project is that it enables marine scientists to predict and visualize the likelihood of coral bleaching based on specific parameters of the Great Barrier Reef. This will allow further attention to areas where corals are more vulnerable to stressors. Because Coral reefs are the most diverse marine ecosystems in the world. They provide billions of dollars of economic value by Coastal protection, food, tourism and medicine from the sea. Coral bleaching leads to coral morbidity and mortality, which leads to coral loss. Global atmosphere-ocean circulation models predict that few coral reefs will survive in the ocean for the next 80 years.
 
-### Data Collection - Bryan
+
+### Data Collection 
 
 ```
 Clear description of the approach in data collection, developed model, the evaluation strategies from a data-science perspective. Here we refer to all types of evaluation metrics including graphical, qualitative and quantitative metric.
@@ -78,6 +81,15 @@ Clear description of the approach in data collection, developed model, the evalu
 Reef project - Clear description of the approach in data collection to address appropriate research questions, developed model, the evaluation strategies from a marine science perspective,
 ```
 The data used in this project is merged from the DATA3888 Reef Check data as well as ocean current netCDF files taken from AIMS (Australian Institute of Marine Science). The ocean data was collated from the years 2017 to 2022? by month. 
+
+The data used in this project was merged from DATA3888 Reef Check data and ocean current netCDF files from AIMS (Australian Institute of Marine Science). Ocean data is from 2010 to 2015. By using mean_cur as the data for ocean currents, most of the fluctuations of the tidal currents are averaged out, allowing some of the large scale current flow patterns to be seen.
+
+Data Collection
+When merging data sets, it can be found that latitude and longitude cannot be accurately matched. Using past data and Jackson's guidance, the team chose to divide the latitude and longitude of each observation into a range rather than an exact value. At the same time, two methods were adopted when merging the data sets, thus obtaining two data sets. A small amount of data is suitable for logistic regression, and a large amount of data is suitable for machine learning, which can help the team get a more accurate model.
+
+Data Prepossessing
+Since the variables used to judge whether coral reefs are bleached in the dataset have the most 0 values, other values are too few. For better classification, the team chose to convert this variable to a binary variable with a threshold of 0 (Average_bleaching = 0 is "bleached", and Average_bleaching > 0 is "not bleached"). And in regression, we choose to stay the same.
+
 
 etc.
 
