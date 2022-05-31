@@ -126,7 +126,7 @@ Scalability: <1 second per 10%, 50%, 70% and 100% sample of data.
 
 
 ### Random Forest - Zhenyu
-
+The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not to bleach. Using multiple decision trees can make the judgment more comprehensive and accurate. A decision tree can be understood as a logical process for you to judge whether reef are bleached. However, one decision tree is more susceptible to outliers, and overfitting is also more likely to occur. Multiple people make decisions together, which will produce a fairer judgment. So random forest can reduce the impact of outliers, reducing the possibility of overfitting. In the random forest model, the accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected in this model, there is no relationship between ocean current velocity and coral bleaching. 
 
 ### Evaluation strategies
 
