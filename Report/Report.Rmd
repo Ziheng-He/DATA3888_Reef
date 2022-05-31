@@ -171,6 +171,8 @@ On a bigger project, we could address our limitations of using only a small prop
 
 # Conclusion
 
+As explained, ocean current velocity and coral bleaching have no relationship, that is current is not a good indicator of coral bleaching. This finding contradicts our hypothesis but it doesn’t come as a surprise, as there had been conclusions drawn either way in previous research. What we can confirm is that the Python Dash is great for visualizing and presenting results. Future directions of research may include: finding larger data sets in combination with more complex and sophisticated models. There is also literature suggesting ocean current’s direction may have an impact on coral bleaching, which was not in the scope of this project.
+
 # Appendix
 
 ### Figure 1 {.tabset}
