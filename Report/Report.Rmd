@@ -119,8 +119,15 @@ The coefficient estimate of `mean_cur` is a positive 0.25, which indicates that 
 
 
 ### Support Vector Machine
+<<<<<<< HEAD
 
 In the SVM model,  the accuracy of the model is 83%. Through the linear kernel function, the coefficient between bleaching and current velocity is -1.89e to the power of 5, which indicates that there is negatively correlated between them, although they are correlated but too weak，so we can say there is no significance between coral bleaching and  ocean currents. 
+=======
+using different SVM kernel functions are used to construct the classification model. Score is measured by accuracy. using kernel functions to explore the stability of the model. Using the same kernel, change the number of C. Find the best linear kernel function, use linear kernel function to explore the relationship between mean cur and dependent variables.
+
+In the SVM model, the accuracy of the model is 83%. Through the linear kernel function, the coefficient between bleaching and current velocity is -1.89e to the power of 5, which indicates that there is negatively correlated between them, although they are correlated but too weak，so we can say there is no significance between coral bleaching and ocean currents.
+
+>>>>>>> 2ee3952f46226485944ed25425c16b005b1f30bc
 
 
 ### Random Forest
