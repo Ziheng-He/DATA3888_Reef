@@ -11,6 +11,7 @@ library(dplyr)
 library(tidyverse)
 library(maps)
 library(ggplot2)
+
 ```
 
 Load LM:
@@ -42,13 +43,15 @@ svm_scalability = c(0.003, 0.022, 0.033, 0.233)
 
 Accuracy:
 ```{r}
-accuracies = data.frame(Accuracy = c(lm_accuracy, rf_accuracy, SVM_accuracy),
+accuracies = data.frame(Accuracy = c(lm_accuracy, rf_accuracy, svm_accuracy),
                         Model = c("Logistic Regression", "Random Forest", "Support Vector Machine"))
 
-ggplot(accuracies, aes(x = Model, y = Accuracy)) +
+accuracy <- ggplot(accuracies, aes(x = Model, y = Accuracy)) +
   geom_bar(stat = "identity", width = 0.5, fill = "steelblue") +
   theme_bw() +
   ggtitle("Accuracy of Model")
+
+accuracy
 
 ```
 Stability: using boxplots
@@ -56,11 +59,12 @@ Stability: using boxplots
 stabilities <- data.frame(model = rep(c('LM', 'RF', 'SVM'), each = 5),
                           accuracies = c(lm_stability, rf_stability, svm_stability))
 
-boxplot(stabilities$accuracies ~ stabilities$model,
+ boxplot(stabilities$accuracies ~ stabilities$model,
         col='steelblue',
         main='Accuracies per fold',
         xlab='Model',
         ylab='Accuracies') 
+
 ```
 Scalability: line graph of time
 ```{r}
