@@ -119,10 +119,12 @@ The coefficient estimate of `mean_cur` is a positive 0.25, which indicates that 
 
 
 ### Support Vector Machine
+
 In the SVM model,  the accuracy of the model is 83%. Through the linear kernel function, the coefficient between bleaching and current velocity is -1.89e to the power of 5, which indicates that there is negatively correlated between them, although they are correlated but too weak，so we can say there is no significance between coral bleaching and  ocean currents. 
 
 
 ### Random Forest
+
 The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not to bleach. Using multiple decision trees can make the judgment more comprehensive and accurate. A decision tree can be understood as a logical process for you to judge whether reef are bleached. However, one decision tree is more susceptible to outliers, and overfitting is also more likely to occur. Multiple people make decisions together, which will produce a fairer judgment. So random forest can reduce the impact of outliers, reducing the possibility of overfitting. In the random forest model, the accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected in this model, there is no relationship between ocean current velocity and coral bleaching. 
 
 ### Evaluation strategies
@@ -142,7 +144,7 @@ A clear justification of the final approach based on the proposed evaluation str
 
 A clear description of the deployment process. An engaging and clear illustration of the product (games, shiny app, learning device etc) with a discussion of concepts from multiple disciplines.
 ```
-The model evaluations showed our Random Forest model had the most accuracy in classifying whether coral bleaching would occur with from our chosen variables. With an overall accuracy of 87%, we have decided to implement this model as part of our final product. 
+There shows to be no correlation between average ocean velocity and the event of coral bleaching in our Great Barrier Reef. All 3 models reflected the same results. The model evaluations showed our Random Forest model had the most accuracy in classifying whether coral bleaching would occur with from our chosen variables. With an overall accuracy of 87%, we have decided to implement this model as part of our final product. 
 
 
 python dash stuff..
@@ -158,13 +160,21 @@ Discussion of potential shortcomings or issues associated with the development p
 ```
 
 ### Limitations
-... blah blah only average ocean velocity not direction etc
-- only the GBF
-- issues
-- only test merged data on 3 classification models, Random Forest model had the most accuracy in classifying whether coral bleaching would occur with from our chosen variables. With an overall accuracy of 87%, however we cannot guarantee that Random Forest model is the best fitting model .
-ocean currents can transport excess nutrients that make corals more susceptible to bleaching , stronger currents can also flush out toxins aiding in the process of coral recovery . But we only assume a relationship between average ocean current velocity and the effect it has on the bleaching of corals In the Great Barrier Reef, we can control the ocean currents within a certain range. When the collected ocean currents exceed a certain value, we can discard that part of the ocean currents data, and perhaps get a more accurate conclusion.
+
+A limitation in our method and data collection was that we only looked at the data on corals of the Great Barrier Reef. This could have an impact on our hypothesis that ocean currents would influence coral bleaching as our data is focused on the Great Barrier Reef. Whereas currents on bleaching on a more global scale could show different results. Furthermore, the scope of our project only covered average ocean velocity and not the direction of the current. The MARS students have identified that, even among the Great Barrier Reef, many different currents flow in and around the reef, also fluctuating upon season. The current direction has also been a considered factor in causing our reefs to be more susceptible to bleaching. These issues can be addressed in our future works.
+
+Another limitation of our project was that we only tested our merged data on 3 classification models. Random Forest had the most accuracy in classifying whether coral bleaching would occur from our chosen variables. With an overall accuracy of 87%, however, we cannot guarantee that the Random Forest model is the best fitting model.
+
+```
+ocean currents can transport excess nutrients that make corals more susceptible to bleaching , stronger currents can also flush out toxins aiding in the process of coral recovery . But we only assume a relationship between average ocean current velocity and the effect it has on the bleaching of corals. In the Great Barrier Reef, we can control the ocean currents within a certain range. When the collected ocean currents exceed a certain value, we can discard that part of the ocean currents data, and perhaps get a more accurate conclusion.
+
+
+What is the last part trying to say?
+```
 
 ### Future work
+
+On a bigger project, we could address our limitations of using only a small proportion of our data. To check whether ocean currents have an impact on coral bleaching, we could compare our reef datasets to global ocean current data. Although the power to run analyses will exponentially increase since global netCDF files are significantly larger, this will include more data for us to draw more meaningful conclusions. Also, studying the direction of ocean currents can help identify other factors in coral bleaching. As ocean currents connect different water sources, this can also influence the temperature of the water flowing in from the equator and subtropics, etc. 
 
 # Conclusion
 
