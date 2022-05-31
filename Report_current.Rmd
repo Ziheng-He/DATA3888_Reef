@@ -24,6 +24,7 @@ library(vcdExtra)
 library(corrplot)
 library(RColorBrewer)
 library(caret)
+require(gridExtra)
 ```
 
 # Executive Summary
@@ -99,19 +100,62 @@ The scalability of a model evaluates how well the model scales across different 
 ### Model evaluations {.tabset}
 Below is the model evaluation for each of the 3 classification models.
 
-#### Accuracy
-```{r}
+```{r, message = FALSE, warning = FALSE}
+#LM data
+lm_data = read_csv("Models/Logistic Regression/time_df.csv")
 
+lm_accuracy = lm_data$Time[6] # accuracy
+lm_stability = c(lm_data$Time[8:12]) # 5 fold accuracy boxplot
+lm_scalability = c(lm_data$Time[1:4]) # stability
+
+#RF data
+rf_data = read_csv("Models/Logistic Regression/rf.csv")
+
+rf_accuracy = rf_data$accuracy[1]
+rf_stability = rf_data$accuracies[1:5]
+rf_scalability = rf_data$time[1:4]
+
+#SVM data
+svm_data = read_csv("Models/Logistic Regression/result.csv")
+svm_time_data = read_csv("Models/Logistic Regression/svm_time.csv")
+
+svm_accuracy = svm_data$accuracy[1]
+svm_stability = svm_data$accuracies[1:5]
+svm_scalability = svm_time_data$time
+
+```
+
+#### Accuracy
+```{r, message = FALSE, warning = FALSE}
+#Accuracy
+accuracies = data.frame(Accuracy = c(lm_accuracy, rf_accuracy, svm_accuracy),
+                        Model = c("Logistic Regression", "Random Forest", "Support Vector Machine"))
+
+ggplot(accuracies, aes(x = Model, y = Accuracy)) +
+  geom_bar(stat = "identity", width = 0.5, fill = "steelblue") +
+  theme_bw() +
+  ggtitle("Accuracy of Model")
 ```
 
 #### Stability
 ```{r}
+stabilities <- data.frame(model = rep(c('LM', 'RF', 'SVM'), each = 5),
+                          accuracies = c(lm_stability, rf_stability, svm_stability))
 
+boxplot(stabilities$accuracies ~ stabilities$model,
+        col='steelblue',
+        main='Accuracies per fold',
+        xlab='Model',
+        ylab='Accuracies') 
 ```
 
 #### Scalability
 ```{r}
+scalabilities <- data.frame(model = rep(c('LM', 'RF', 'SVM'), each = 4),
+                            train_size = as.factor(c('10%', '50%', '70%', '100%')),
+                            time = c(lm_scalability, rf_scalability, svm_scalability))
 
+ggplot(scalabilities, aes(x = train_size, y = time, group = model, colour = model)) + geom_line() 
 ```
 
 It can be seen that random forest has the best accuracy, but the slowest speed; while logistic regression is the fastest, but the accuracy is lower than random forest. But the team argues that the accuracy of predictions about whether coral reefs will bleach is more important than the speed of predictions. If the model fails to accurately classify bleached coral reefs, the management and protection of coral reefs will be incomplete, resulting in significant losses.
@@ -132,11 +176,12 @@ There shows to be no correlation between average ocean velocity and the event of
  
 This project was highly multidisciplinary. While DATA students analysed the data and model fitting, MARS students would attempt to make theoretical conclusions on our results. Focusing on the hypothesis, they justified that ocean currents have a less significant impact on coral reef bleaching. Both fields influenced each other in these processes.
 
-python dash stuff..
+python dash stuff.. (how it works)
 
 ### Innovation
 
-about python dash .. etc
+about python dash .. etc (whats cool about it)
+e.g. keeps the old data points on map?
 
 
 # Discussion
