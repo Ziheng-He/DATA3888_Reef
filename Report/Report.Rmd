@@ -56,32 +56,30 @@ Coral reefs are the most diverse marine ecosystems in the world. They provide bi
 
 We know that warmer ocean temperatures linked to climate change are the primary factors in coral bleaching. In the interdisciplinary project with the MARS students, we identified an interesting correlation between ocean currents, thermal activity, and its effect on coral. However, upon further research, conflicting literature states that, while ocean currents can transport excess nutrients that make corals more susceptible to bleaching (DeCarlo et al., 2020), stronger currents can also flush out toxins aiding in the process of coral recovery (Nakamura et al., 2003).
 
-Our team looked at the relationship between average ocean current velocity and the effect it has on the bleaching of corals in the Great Barrier Reef. In doing so, we can confirm our hypothesis that ocean currents do have a significant impact on coral bleaching. The motivation for our group to implement the project is that it enables marine scientists to predict and visualize the likelihood of coral bleaching based on specific parameters of the Great Barrier Reef. Our overall aim was to implement different classification models on Python Dash to enable marine scientists to predict and visualize the chance of coral bleaching given specific parameters within the Great Barrier Reef. This will allow further attention on areas where corals are more susceptible to stressing factors. 
+Our team looked at the relationship between average ocean current velocity and the effect it has on the bleaching of corals in the Great Barrier Reef. In doing so, we can confirm our hypothesis that ocean currents do have a significant impact on coral bleaching. The motivation for our group to implement the project is that it enables marine scientists to predict and visualize the likelihood of coral bleaching based on specific parameters of the Great Barrier Reef. Our overall aim was to implement different classification models on Python Dash to enable marine scientists to predict and visualize the chance of coral bleaching given specific parameters within the Great Barrier Reef. This will allow further attention on areas where corals are more susceptible to stressing factors.
 
 Figure 1
 
 # Method
 
-```
-- Communicate the results to a general scientist, note this is different to the target audience of your product. 
-- A clear description of your innovation and approach to the scientific problem.
-- Include all relevant data summaries only.
-- What is your approach and which tools are used and why? 
-- What are the key findings? and use figures to illustrate the results.
-- How robust and generalizable is your finding or your product?
-- Main code and technical details of your approach in the appendix.
-```
+    - Communicate the results to a general scientist, note this is different to the target audience of your product. 
+    - A clear description of your innovation and approach to the scientific problem.
+    - Include all relevant data summaries only.
+    - What is your approach and which tools are used and why? 
+    - What are the key findings? and use figures to illustrate the results.
+    - How robust and generalizable is your finding or your product?
+    - Main code and technical details of your approach in the appendix.
+
 The following models were used for variable selection and classification: logistic regression (LR), random forest (RF), and support vector machine (SVM).
 
-We analyzed these model accuracies, combined with feature selection to determine which classifier and features were best for our goals. By comparing the model performances, we concluded the random forest classifier was the most accurate for classifying coral bleaching. Our models also showed which of the characteristic variables were more significant in determining the main factors that lead to coral bleaching. 
+We analyzed these model accuracies, combined with feature selection to determine which classifier and features were best for our goals. By comparing the model performances, we concluded the random forest classifier was the most accurate for classifying coral bleaching. Our models also showed which of the characteristic variables were more significant in determining the main factors that lead to coral bleaching.
 
-### Data Collection 
+### Data Collection
 
-```
-Clear description of the approach in data collection, developed model, the evaluation strategies from a data-science perspective. Here we refer to all types of evaluation metrics including graphical, qualitative and quantitative metric.
+    Clear description of the approach in data collection, developed model, the evaluation strategies from a data-science perspective. Here we refer to all types of evaluation metrics including graphical, qualitative and quantitative metric.
 
-Reef project - Clear description of the approach in data collection to address appropriate research questions, developed model, the evaluation strategies from a marine science perspective,
-```
+    Reef project - Clear description of the approach in data collection to address appropriate research questions, developed model, the evaluation strategies from a marine science perspective,
+
 The data used in this project is merged from the DATA3888 Reef Check data as well as ocean current netCDF files taken from AIMS (Australian Institute of Marine Science). The ocean data was collated from the years 2010 to 2015 by month. We used `mean_cur` (average of current velocity) as our main variable from ocean currents. Most of the fluctuations of the tidal currents are averaged out, thus allowing some of the large-scale current flow patterns to be seen.
 
 **Data Collection**
@@ -96,27 +94,25 @@ Our main variable of interest was `Average_bleaching`. We discovered there were 
 
 We tested our merged data on 3 classification models - Logistic Regression, Support Vector Machine and Random Forest. With average bleaching as the response model, we used the same variables for our 3 models. This included the variables:
 
-- ClimSST (Climatological Sea Surface Temperature)
-- Temperature_Kelvin (temperature in kelvin)
-- Temperature_Kelvin_Standard_Deviation
-- SSTA_Frequency (Sea Surface Temperature Anomaly)
-- SSTA_Frequency_Standard_Deviation
-- TSA_Frequency_Standard_Deviation
-- mean_cur (mean ocean current velocity)
+-   ClimSST (Climatological Sea Surface Temperature)
+-   Temperature_Kelvin (temperature in kelvin)
+-   Temperature_Kelvin_Standard_Deviation
+-   SSTA_Frequency (Sea Surface Temperature Anomaly)
+-   SSTA_Frequency_Standard_Deviation
+-   TSA_Frequency_Standard_Deviation
+-   mean_cur (mean ocean current velocity)
 
 The team chose an algorithm that combines efficiency and accuracy, meaning a balance between extremely short runtime and high accuracy. In the ML classification model below, SVM and Random Forest are from SKLearn's suite of ML algorithms. Logistic regression comes from the glm function of the R language. To further reduce equipment impact, time measurements were made on the same computer.
 
-The accuracy of each model is determined by cross-fold validation on the training set, while the speed of the classifier is simultaneously determined by setting a timer for the prediction stage.
-The models our team investigated are as follows:
+The accuracy of each model is determined by cross-fold validation on the training set, while the speed of the classifier is simultaneously determined by setting a timer for the prediction stage. The models our team investigated are as follows:
 
 ### Logistic Regression Model
 
-We used a Logistic Regression Model to predict the outcome of bleaching against our chosen predictor variables from our merged data. Our logistic regression model works by returning an estimate of the probability of coral bleaching occurring between 0 and 1. 
+We used a Logistic Regression Model to predict the outcome of bleaching against our chosen predictor variables from our merged data. Our logistic regression model works by returning an estimate of the probability of coral bleaching occurring between 0 and 1.
 
-First, by looking at the significance of our chosen variables, we want to see whether there is a strong correlation between average current velocity and coral bleaching. We decided on p-values less than 0.05 determining a more significant relationship to bleaching. From our model, the mean current velocity had a value of 0.89. This indicates that ocean velocity had no effect in the event of coral bleaching. However, the SSTA frequency (number of times that the sea surface temperature anomaly had a change of more than one degree Celsius) and the temperature variables showed significance associated to the outcome. 
+First, by looking at the significance of our chosen variables, we want to see whether there is a strong correlation between average current velocity and coral bleaching. We decided on p-values less than 0.05 determining a more significant relationship to bleaching. From our model, the mean current velocity had a value of 0.89. This indicates that ocean velocity had no effect in the event of coral bleaching. However, the SSTA frequency (number of times that the sea surface temperature anomaly had a change of more than one degree Celsius) and the temperature variables showed significance associated to the outcome.
 
-The coefficient estimate of `mean_cur` is a positive 0.25, which indicates that a higher average current velocity is associated the an increased probability that the reef will be susceptible to coral bleaching. This alludes to Mcclanahan et al., (2005), that more intense bleaching was found on sites with higher currents and bleaching was observed to be positively associated with higher water flow. Likewise, the coefficients for `clim_sst` and `temperature_kelvin` were 0.01, suggesting higher temperatures were positively associated to coral bleaching. Since it is difficult to distinguish between water flow, temperature, and the other environmental factors of the ocean, it is harder to conclude the main factors responsible for bleaching.
-
+The coefficient estimate of `mean_cur` is a positive 0.25, which indicates that our model, with a higher average current velocity is associated to an increased probability that the reef will be susceptible to coral bleaching. This alludes to Mcclanahan et al., (2005), that more intense bleaching was found on sites with higher currents and bleaching was observed to be positively associated with higher water flow. Likewise, the coefficients for `clim_sst` and `temperature_kelvin` were 0.01, suggesting higher temperatures were positively associated to coral bleaching. 
 
 ### Support Vector Machine
 
@@ -124,30 +120,29 @@ Different SVM kernel functions are used to construct the classification model. S
 
 In the SVM model, the accuracy of the model is 83%. Through the linear kernel function, the coefficient between bleaching and current velocity is -1.89e to the power of 5, which indicates that there is negatively correlated between them, although they are correlated but too weak，so we can say there is no significance between coral bleaching and ocean currents.
 
-
 ### Random Forest
 
-The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not to bleach. Using multiple decision trees can make the judgment more comprehensive and accurate. A decision tree can be understood as a logical process for you to judge whether reef are bleached. However, one decision tree is more susceptible to outliers, and overfitting is also more likely to occur. Multiple people make decisions together, which will produce a fairer judgment. So random forest can reduce the impact of outliers, reducing the possibility of overfitting. In the random forest model, the accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected in this model, there is no relationship between ocean current velocity and coral bleaching. 
+The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not to bleach. Using multiple decision trees can make the judgment more comprehensive and accurate. A decision tree can be understood as a logical process for you to judge whether reef are bleached. However, one decision tree is more susceptible to outliers, and overfitting is also more likely to occur. Multiple people make decisions together, which will produce a fairer judgment. So random forest can reduce the impact of outliers, reducing the possibility of overfitting. In the random forest model, the accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected in this model, there is no relationship between ocean current velocity and coral bleaching.
 
 ### Evaluation strategies
 
-SVM: Accuracy: 0.83
-Interpretability: the coefficient between bleaching and current velocity is -0.0000189
-no significance in coral bleaching related to ocean current velocity. 
-Scalability: <1 second per 10%, 50%, 70% and 100% sample of data.
+We evaluated the accuracy, stability, and scalability of the three models in our evaluation strategy. 
+
+Accuracy was extracted from 5-fold cross-validation with only 1 repeat. These gave an accuracy of 0.84, 0.87, and 0.83 respectively. Opting for a higher accuracy value, we see that the accuracy for Random Forest is the most accurate classification model (Figure 2.1). 
+
+We evaluate the stability based on how well our model can predict actual observations. To do this, we get the accuracy of each of the 5 folds of the cross validation from before. Using boxplots to compare the standard deviations of each model, reflects how well Random Forest performs on accurately predicting real values (Figure 2.2).
+
+The scalability of a model evaluates how well the model scales across different sizes of data. From the training set, we take samples of 10%, 50%, 70%, and the whole 100% of data and test how long it will take to run. Based on the steepness of the line graph, it can suggest how scalable our models are. In this case, all models ran in under a second, given the smaller data size of our project (Figure 2.3).
 
 Figure 2
 
-
 # Results
 
-```
-A clear justification of the final approach based on the proposed evaluation strategies. Ensuring multiple evaluation strategies are used.
+    A clear justification of the final approach based on the proposed evaluation strategies. Ensuring multiple evaluation strategies are used.
 
-A clear description of the deployment process. An engaging and clear illustration of the product (games, shiny app, learning device etc) with a discussion of concepts from multiple disciplines.
-```
-There shows to be no correlation between average ocean velocity and the event of coral bleaching in our Great Barrier Reef. All 3 models reflected the same results. The model evaluations showed our Random Forest model had the most accuracy in classifying whether coral bleaching would occur with from our chosen variables. With an overall accuracy of 87%, we have decided to implement this model as part of our final product. 
+    A clear description of the deployment process. An engaging and clear illustration of the product (games, shiny app, learning device etc) with a discussion of concepts from multiple disciplines.
 
+There shows to be no correlation between average ocean velocity and the event of coral bleaching in our Great Barrier Reef. All 3 models reflected the same results. The model evaluations showed our Random Forest model had the most accuracy in classifying whether coral bleaching would occur with our chosen variables. With an overall accuracy of 87%, we have decided to implement this model as part of our final product.
 
 python dash stuff..
 
@@ -157,9 +152,7 @@ blahlafafbla
 
 # Discussion
 
-```
-Discussion of potential shortcomings or issues associated with the development process or the product with reference to both disciplines. Identification of future work or improvement in both disciplines. Conclusion adequately summarises the project and identification of future work.
-```
+    Discussion of potential shortcomings or issues associated with the development process or the product with reference to both disciplines. Identification of future work or improvement in both disciplines. Conclusion adequately summarises the project and identification of future work.
 
 ### Limitations
 
@@ -167,16 +160,14 @@ A limitation in our method and data collection was that we only looked at the da
 
 Another limitation of our project was that we only tested our merged data on 3 classification models. Random Forest had the most accuracy in classifying whether coral bleaching would occur from our chosen variables. With an overall accuracy of 87%, however, we cannot guarantee that the Random Forest model is the best fitting model.
 
-```
-ocean currents can transport excess nutrients that make corals more susceptible to bleaching , stronger currents can also flush out toxins aiding in the process of coral recovery . But we only assume a relationship between average ocean current velocity and the effect it has on the bleaching of corals. In the Great Barrier Reef, we can control the ocean currents within a certain range. When the collected ocean currents exceed a certain value, we can discard that part of the ocean currents data, and perhaps get a more accurate conclusion.
+    ocean currents can transport excess nutrients that make corals more susceptible to bleaching , stronger currents can also flush out toxins aiding in the process of coral recovery . But we only assume a relationship between average ocean current velocity and the effect it has on the bleaching of corals. In the Great Barrier Reef, we can control the ocean currents within a certain range. When the collected ocean currents exceed a certain value, we can discard that part of the ocean currents data, and perhaps get a more accurate conclusion.
 
 
-What is the last part trying to say?
-```
+    What is the last part trying to say?
 
 ### Future work
 
-On a bigger project, we could address our limitations of using only a small proportion of our data. To check whether ocean currents have an impact on coral bleaching, we could compare our reef datasets to global ocean current data. Although the power to run analyses will exponentially increase since global netCDF files are significantly larger, this will include more data for us to draw more meaningful conclusions. Also, studying the direction of ocean currents can help identify other factors in coral bleaching. As ocean currents connect different water sources, this can also influence the temperature of the water flowing in from the equator and subtropics, etc. 
+On a bigger project, we could address our limitations of using only a small proportion of our data. To check whether ocean currents have an impact on coral bleaching, we could compare our reef datasets to global ocean current data. Although the power to run analyses will exponentially increase since global netCDF files are significantly larger, this will include more data for us to draw more meaningful conclusions. Also, studying the direction of ocean currents can help identify other factors in coral bleaching. As ocean currents connect different water sources, this can also influence the temperature of the water flowing in from the equator and subtropics, etc.
 
 # Conclusion
 
@@ -187,6 +178,7 @@ On a bigger project, we could address our limitations of using only a small prop
 Here, we have graphed an initial look at our data.
 
 #### Coral bleaching
+
 ```{r, warning = FALSE, message = FALSE}
 world <- map_data("world")
 oz_states <- ozmap_states
@@ -200,6 +192,7 @@ ggplot(oz_states) + geom_sf() + coord_sf() +
 ```
 
 #### Average coral bleaching
+
 ```{r}
 ggplot(oz_states) + geom_sf() + coord_sf() +
   geom_point(
@@ -210,23 +203,23 @@ ggplot(oz_states) + geom_sf() + coord_sf() +
 
 ```
 
+# Student contributions
 
-# Student contributions  
 (50-200 words)
 
 # References
 
-- https://www.barrierreef.org/the-reef/threats/coral-bleaching 
-- https://oceanservice.noaa.gov/facts/coral_bleach.html 
-- DeCarlo ...
-- Nakamura ...
-- https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2009JC005761
-- Effects of geography, taxa, water flow, and temperature variation on coral bleaching intensity in Mauritius
+-   <https://www.barrierreef.org/the-reef/threats/coral-bleaching>
+-   <https://oceanservice.noaa.gov/facts/coral_bleach.html>
+-   DeCarlo ...
+-   Nakamura ...
+-   <https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2009JC005761>
+-   Effects of geography, taxa, water flow, and temperature variation on coral bleaching intensity in Mauritius
 
+```{=html}
+<!-- -->
 ```
-# Presentation
-- Correct grammar
-- All figures and tables captioned, axes, headings, legends
-- Only show necessary figures (Appendix)
-```
-
+    # Presentation
+    - Correct grammar
+    - All figures and tables captioned, axes, headings, legends
+    - Only show necessary figures (Appendix)
