@@ -186,7 +186,7 @@ There shows to be no correlation between average ocean velocity and the event of
 
 This project was highly multidisciplinary. While DATA students analysed the data and model fitting, MARS students would attempt to make theoretical conclusions on our results. Focusing on the hypothesis, they justified that ocean currents have a less significant impact on coral reef bleaching. Both fields influenced each other in these processes.
 
-python dash stuff.. (how it works)
+The final product, i.e. the Python Dash, is a platform where researchers can make predictions and visualize results for coral bleaching. There are a total of four visualizations. The first is an animated map (over years and months) that visualizes all the raw data that we used to train our models. The next three correspond to each of the aforementioned models. After typing in the values are all parameters, the user can click on the button to make a prediction, which will then be shown on a map. All the predictions that a user has made would be presented on the map.
 
 ### Innovation
 
@@ -258,9 +258,9 @@ sessionInfo()
 
 # Student contributions
 
-Bryan He: data visualizations, speaking for presentation, dash implementation, merging dataset, Describing implementation of Dash in report, revising report.
+Bryan He: Data pre-processing and data merging. Writing all code for the Dash. Data visualization, creating slides and speaking for presentation. Describing implementation for Dash in this report, revising report.
 
-Kitty Jo：Logistic regression model fitting, data visualizations, model evaluation, model comparison, speaking for presentation, writing executive summary, evaluations, discussion part of report, revising report.
+Kitty Jo：Logistic regression model fitting, data visualizations, model evaluation, model comparison, creating slided and speaking for presentation, writing executive summary, evaluations, discussion part of report, revising report.
 
 Harry Xu：Random forest model fitting, data visualizations, model evaluation, evaluating the feature extraction strategy and tuning the final ML model. Write the Executive Summary, Data Collection and Preprocessing, Evaluations, Machine Learning Algorithm part of report, revising report.
 
