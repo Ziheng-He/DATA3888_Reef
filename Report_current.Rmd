@@ -33,15 +33,11 @@ Coral reefs are the most diverse marine ecosystems in the world. They provide bi
 
 We know that warmer ocean temperatures linked to climate change are the primary factors in coral bleaching. In the interdisciplinary project with the MARS students, we identified an interesting correlation between ocean currents, thermal activity, and its effect on coral. However, upon further research, conflicting literature states that, while ocean currents can transport excess nutrients that make corals more susceptible to bleaching (DeCarlo et al., 2020), stronger currents can also flush out toxins aiding in the process of coral recovery (Nakamura et al., 2003).
 
-Our team looked at the relationship between average ocean current velocity and the effect it has on the bleaching of corals in the Great Barrier Reef. In doing so, we can confirm our hypothesis that ocean currents do have a significant impact on coral bleaching. The motivation for our group to implement the project is that it enables marine scientists to predict and visualize the likelihood of coral bleaching based on specific parameters of the Great Barrier Reef. Our overall aim was to implement different classification models on Python Dash to enable marine scientists to predict and visualize the chance of coral bleaching given specific parameters within the Great Barrier Reef. This will allow further attention on areas where corals are more susceptible to stressing factors.
+Our team looked at the relationship between average ocean current velocity and the effect it has on the bleaching of corals in the Great Barrier Reef. In doing so, we can confirm our hypothesis that ocean currents do have a significant impact on coral bleaching. The motivation for our group to implement the project is that it enables marine scientists to predict and visualize the likelihood of coral bleaching based on specific parameters of the Great Barrier Reef. Our overall aim was to implement different classification models on Python Dash to enable marine scientists to predict and visualize the chance of coral bleaching given specific parameters within the Great Barrier Reef. This will allow further attention on areas where corals are more susceptible to stressing factors. Accuracy and feature selection were analyzed to determine which classifiers and features were best for classification of reef bleaching. After multiple evaluations, the random forest classifier is the most accurate for determining whether coral reefs are bleached. At the same time, the three models analyze the characteristic variables to determine the main variables that lead to coral reef bleaching.
 
 # Method
 
-The following models were used for variable selection and classification: logistic regression (LR), random forest (RF), and support vector machine (SVM).
-
-We analyzed these model accuracies, combined with feature selection to determine which classifier and features were best for our goals. By comparing the model performances, we concluded the random forest classifier was the most accurate for classifying coral bleaching. Our models also showed which of the characteristic variables were more significant in determining the main factors that lead to coral bleaching.
-
-### Data Collection
+### Data
 
 The data used in this project is merged from the DATA3888 Reef Check data as well as ocean current netCDF files taken from AIMS (Australian Institute of Marine Science). The ocean data was collated from the years 2010 to 2015 by month. We used `mean_cur` (average of current velocity) as our main variable from ocean currents. Most of the fluctuations of the tidal currents are averaged out, thus allowing some of the large-scale current flow patterns to be seen.
 
@@ -49,13 +45,19 @@ The data used in this project is merged from the DATA3888 Reef Check data as wel
 
 When merging data sets, we found that latitude and longitude cannot be accurately matched. Using past data and Jackson's guidance, the team chose to divide the latitude and longitude of each observation into a range rather than an exact value. At the same time, two methods were adopted when merging the data sets, thus obtaining two data sets. A small amount of data is suitable for logistic regression, and a large amount of data is suitable for machine learning, which can help the team get a more accurate model.
 
-**Data Prepossessing**
+**Data Prepocessing**
 
 Our main variable of interest was `Average_bleaching`. We discovered there were more 0 values than any other values. For our classification task, our team chose to convert this variable to a binary variable with a threshold of 0. In this case, where the average bleaching equals 0, it would be classified as "bleached", and where average bleaching is greater than 0, it would be "not bleached". However, in our regression model, it would be reversed (average bleaching equals 0 showed no signs of bleaching, and greater than 0 would imply there has been previous bleaching.
 
 ### Models
 
-We tested our merged data on 3 classification models - Logistic Regression, Support Vector Machine and Random Forest. With average bleaching as the response model, we used the same variables for our 3 models. This included the variables:
+The following models were used for variable selection and classification: logistic regression (LR), random forest (RF), and support vector machine (SVM).
+
+We analyzed these model accuracies, combined with feature selection to determine which classifier and features were best for our goals. By comparing the model performances, we concluded the random forest classifier was the most accurate for classifying coral bleaching. Our models also showed which of the characteristic variables were more significant in determining the main factors that lead to coral bleaching.
+
+**Feature Extraction**
+
+We tested our merged data on 3 classification models - Logistic Regression, Support Vector Machine and Random Forest. With average bleaching as the response model, we decided to use the same variables for our 3 models. This included the variables:
 
 -   ClimSST (Climatological Sea Surface Temperature)
 -   Temperature_Kelvin (temperature in kelvin)
@@ -65,11 +67,15 @@ We tested our merged data on 3 classification models - Logistic Regression, Supp
 -   TSA_Frequency_Standard_Deviation
 -   mean_cur (mean ocean current velocity)
 
+Since our models were not designed specifically for our main research purpose, they can only estimate parameters for our specified variables. Blindly relying on these results can be misleading when discussing analyses and interpretations. Therefore, although ‘mean_cur` showed little relevance in the previous pre-analysis, it was closely related to our study and we chose to include it.
+
+### Machine Learning Algorithm
+
 The team chose an algorithm that combines efficiency and accuracy, meaning a balance between extremely short runtime and high accuracy. In the ML classification model below, SVM and Random Forest are from SKLearn's suite of ML algorithms. Logistic regression comes from the glm function of the R language. To further reduce equipment impact, time measurements were made on the same computer.
 
 The accuracy of each model is determined by cross-fold validation on the training set, while the speed of the classifier is simultaneously determined by setting a timer for the prediction stage. The models our team investigated are as follows:
 
-### Logistic Regression Model
+**Logistic Regression Model**
 
 We used a Logistic Regression Model to predict the outcome of bleaching against our chosen predictor variables from our merged data. Our logistic regression model works by returning an estimate of the probability of coral bleaching occurring between 0 and 1.
 
@@ -77,13 +83,13 @@ First, we want to identify whether there is a strong correlation between average
 
 The coefficient estimate of `mean_cur` is a positive 0.25, which indicates that our model, with a higher average current velocity is associated to an increased probability that the reef will be susceptible to coral bleaching. This alludes to Mcclanahan et al., (2005), that more intense bleaching was found on sites with higher currents and bleaching was observed to be positively associated with higher water flow. Likewise, the coefficients for `clim_sst` and `temperature_kelvin` were 0.01, suggesting higher temperatures were positively associated to coral bleaching. 
 
-### Support Vector Machine
+**Support Vector Machine**
 
 Different SVM kernel functions are used to construct the classification model. Score is measured by accuracy. Kernel functions are used to explore the stability of the model. Using the same kernel, change the number of C. Find the best linear kernel function and use linear kernel function to explore the relationship between mean cur and dependent variables.
 
 In the SVM model, the accuracy of the model is 83%. Through the linear kernel function, the coefficient between bleaching and current velocity is -1.89e to the power of 5, which indicates that there is negatively correlated between them, although they are correlated but too weak，so we can say there is no significance between coral bleaching and ocean currents.
 
-### Random Forest
+**Random Forest**
 
 The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not to bleach. Using multiple decision trees can make the judgment more comprehensive and accurate. A decision tree can be understood as a logical process for you to judge whether reef are bleached. However, one decision tree is more susceptible to outliers, and overfitting is also more likely to occur. Multiple people make decisions together, which will produce a fairer judgment. So random forest can reduce the impact of outliers, reducing the possibility of overfitting. In the random forest model, the accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected in this model, there is no relationship between ocean current velocity and coral bleaching.
 
@@ -164,8 +170,6 @@ Therefore, random forest is selected as the main prediction method. Another fact
 
 The next step is to perform hyperparameter tuning on our RF classifier. Here the team chose the Grid Search algorithm, which avoids overfitting. Our analysis concluded that estimators = 22 gave the best performance of the classifier.
 
-
-
 # Results
 
     A clear justification of the final approach based on the proposed evaluation strategies. Ensuring multiple evaluation strategies are used.
@@ -179,6 +183,8 @@ This project was highly multidisciplinary. While DATA students analysed the data
 python dash stuff.. (how it works)
 
 ### Innovation
+
+The team chose to use Python Dash to build our application instead of shiny. This is because dash is easier to use than shiny and the majority of our team is more proficient in Python than R. In python, the team uses the rpy2 package, making it possible for the dash to run R commands. This also makes it easier for teams to work together - those who want to use R can use R, and those who want to use Python can use Python.
 
 about python dash .. etc (whats cool about it)
 e.g. keeps the old data points on map?
@@ -210,9 +216,9 @@ Bryan He: data visualizations, speaking for presentation, dash implementation, m
 
 Kitty Jo：Logistic regression model fitting, data visualizations, model evaluation, model comparison, speaking for presentation, writing executive summary, evaluations, discussion part of report, revising report.
 
-Harry Xu：Random forest model fitting, data visualizations, evaluating the feature extraction strategy and tuning the final ML model. Write the Executive Summary, Data Collection and Preprocessing, Evaluations, Machine Learning Algorithm part of report, revising report.
+Harry Xu：Random forest model fitting, data visualizations, model evaluation, evaluating the feature extraction strategy and tuning the final ML model. Write the Executive Summary, Data Collection and Preprocessing, Evaluations, Machine Learning Algorithm part of report, revising report.
 
-Oliver He：Support-vector machine fitting, data visualizations, write the results section and the discussion part of the report, revising report.
+Oliver He：Support-vector machine fitting, data visualizations, model evaluation, write the results section and the discussion part of the report, revising report.
 
 
 # References
