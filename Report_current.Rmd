@@ -196,6 +196,7 @@ Figure 3. Animated map visualisation of raw coral bleaching data
 
 The slider shown on the bottom represents the time, in months and years, which the entries were added. It can be moved to show the details of the entries in that time frame as well as a colour scale representing the ocean velocity and an accurate location-wise visualisation.
 
+<<<<<<< HEAD
 The next three correspond to each of the aforementioned models. After typing in the values of each parameter, the user can click on the button to make a prediction. The data point of this prediction will be shown on the map. Looking at our prediction model for our random forest model, this is what the interface would look like after a prediction has been made. The prediction would state whether bleaching should occur given the values of each parameter. All the predictions that a user has made would be presented on the map.
 
 ![](figures/dash%20RF.png)
@@ -203,6 +204,9 @@ The next three correspond to each of the aforementioned models. After typing in 
 Figure 4. Random Forest visualisation on Dash
 
 This project was highly multidisciplinary. While DATA students analysed the data and model fitting, MARS students would attempt to make theoretical conclusions on our results. Focusing on the hypothesis, they justified that ocean currents have a less significant impact on coral reef bleaching. Both fields influenced each other in these processes.
+=======
+The final product, i.e. the Python Dash, is a platform where researchers can make predictions and visualize results for coral bleaching. There are a total of four visualizations. The first is an animated map (over years and months) that visualizes all the raw data that we used to train our models. The next three correspond to each of the aforementioned models. After typing in the values are all parameters, the user can click on the button to make a prediction, which will then be shown on a map. All the predictions that a user has made would be presented on the map.
+>>>>>>> 43594e05ce9d7e30796441db7ac7c6daacd962e7
 
 ### Innovation
 
@@ -276,9 +280,15 @@ sessionInfo()
 
 # Student contributions
 
+<<<<<<< HEAD
 Bryan He: data visualizations, creating slides and speaking for presentation, dash implementation and coding, merging dataset and data preprocessing steps, Describing implementation of Dash in report, revising report.
 
 Kitty Jo：Logistic regression model fitting, data visualizations, model evaluation, model comparison, creating slides and speaking for presentation, writing executive summary, evaluations, discussion part of report, collating report in R, revising report.
+=======
+Bryan He: Data pre-processing and data merging. Writing all code for the Dash. Data visualization, creating slides and speaking for presentation. Describing implementation for Dash in this report, revising report.
+
+Kitty Jo：Logistic regression model fitting, data visualizations, model evaluation, model comparison, creating slided and speaking for presentation, writing executive summary, evaluations, discussion part of report, revising report.
+>>>>>>> 43594e05ce9d7e30796441db7ac7c6daacd962e7
 
 Harry Xu：Random forest model fitting, data visualizations, model evaluation, evaluating the feature extraction strategy and tuning the final ML model. Write the Executive Summary, Data Collection and Preprocessing, Evaluations, Machine Learning Algorithm part of report, revising report.
 
