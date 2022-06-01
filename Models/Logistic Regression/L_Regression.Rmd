@@ -88,6 +88,8 @@ ggplot(oz_states) + geom_sf() + coord_sf() +
     alpha = 0.7) + ggtitle("Amount of coral points bleached vs not bleached in the GBF") + 
   ylab("Latitude") + xlab("Longitude") + scale_colour_manual(labels = c("not bleached", "bleached"), values = c("red", "blue"))
 
+oz_states <- ozmap_states
+
 ggplot(oz_states) + geom_sf() + coord_sf() +
   geom_point(
     data = data,

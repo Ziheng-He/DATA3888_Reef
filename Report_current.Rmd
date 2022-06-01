@@ -5,7 +5,7 @@ output:
     toc: true
     toc_float: true
     code_folding: hide
-author: '490407529, 500516735, 500201978, Bryan'
+author: '490407529, 500516735, 500201978, 490249697'
 ---
 
 ```{r setup, include=FALSE}
@@ -93,7 +93,7 @@ In the SVM model, the accuracy of the model is 83%. Through the linear kernel fu
 
 The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not bleaching occurs. Using multiple decision trees can make the classification more accurate. A decision tree can be understood as a logical process for you to determine whether reef are bleached. However, one decision tree is more susceptible to outliers and overfitting is also more likely to occur. Multiple decision trees will produce a fairer judgment. So our random forest model can reduce the impact of outliers while reducing our possibility of overfitting. The accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected, implying there is no relationship between ocean current velocity and coral bleaching.
 
-![](RF.png){width="570"}
+![](figures/RF.png)
 
 Figure 1. Random Forest Model
 
@@ -174,7 +174,7 @@ scalabilities <- data.frame(model = rep(c('LM', 'RF', 'SVM'), each = 4),
 ggplot(scalabilities, aes(x = train_size, y = time, group = model, colour = model)) + geom_line() 
 ```
 
-### {-}
+###  {.unnumbered}
 
 Figure 2. Model evaluation graphs comparing 3 models
 
@@ -186,21 +186,31 @@ The next step is to perform hyperparameter tuning on our RF classifier. Here the
 
 # Results
 
-    A clear description of the deployment process. An engaging and clear illustration of the product (games, shiny app, learning device etc) with a discussion of concepts from multiple disciplines.
-
 There shows to be no correlation between average ocean velocity and the event of coral bleaching in our Great Barrier Reef. All 3 models reflected the same results. We used the Random Forest algorithm as our final classification model. Although this algorithm took the longest classification time, random forest has the best accuracy; while logistic regression is the fastest, the accuracy is lower than random forest. Using multiple decision trees can make the judgment more comprehensive. Furthermore, random forest can reduce the impact of outliers to reduce the possibility of overfitting.
 
-This project was highly multidisciplinary. While DATA students analysed the data and model fitting, MARS students would attempt to make theoretical conclusions on our results. Focusing on the hypothesis, they justified that ocean currents have a less significant impact on coral reef bleaching. Both fields influenced each other in these processes.
+The final product, i.e. the Python Dash, is a platform where researchers can make predictions and visualise results for coral bleaching along the Great Barrier Reef. There are a total of 4 visualisations. The first is an animated map (over years and months) that visualises all the raw data that we used to train our models.
 
-python dash stuff.. (how it works)
+![](figures/dash%20map.PNG)
+
+Figure 3. Animated map visualisation of raw coral bleaching data
+
+The slider shown on the bottom represents the time, in months and years, which the entries were added. It can be moved to show the details of the entries in that time frame as well as a colour scale representing the ocean velocity and an accurate location-wise visualisation.
+
+The next three correspond to each of the aforementioned models. After typing in the values of each parameter, the user can click on the button to make a prediction. The data point of this prediction will be shown on the map. Looking at our prediction model for our random forest model, this is what the interface would look like after a prediction has been made. The prediction would state whether bleaching should occur given the values of each parameter. All the predictions that a user has made would be presented on the map.
+
+![](figures/dash%20RF.png)
+
+Figure 4. Random Forest visualisation on Dash
+
+This project was highly multidisciplinary. While DATA students analysed the data and model fitting, MARS students would attempt to make theoretical conclusions on our results. Focusing on the hypothesis, they justified that ocean currents have a less significant impact on coral reef bleaching. Both fields influenced each other in these processes.
 
 ### Innovation
 
 The team chose to use Python Dash to build our application instead of shiny. This is because dash is easier to use than shiny and the majority of our team is more proficient in Python than R. In python, the team uses the rpy2 package, making it possible for the dash to run R commands. This also makes it easier for teams to work together - combining code from both python and R.
 
-![](Innovation.png)
+![](figures/Innovation.png)
 
-Figure 3. Using rpy2 package on python to run R script
+Figure 5. Using rpy2 package on python to run R script
 
 # Discussion
 
@@ -266,9 +276,9 @@ sessionInfo()
 
 # Student contributions
 
-Bryan He: data visualizations, speaking for presentation, dash implementation, merging dataset, Describing implementation of Dash in report, revising report.
+Bryan He: data visualizations, creating slides and speaking for presentation, dash implementation and coding, merging dataset and data preprocessing steps, Describing implementation of Dash in report, revising report.
 
-Kitty Jo：Logistic regression model fitting, data visualizations, model evaluation, model comparison, speaking for presentation, writing executive summary, evaluations, discussion part of report, revising report.
+Kitty Jo：Logistic regression model fitting, data visualizations, model evaluation, model comparison, creating slides and speaking for presentation, writing executive summary, evaluations, discussion part of report, collating report in R, revising report.
 
 Harry Xu：Random forest model fitting, data visualizations, model evaluation, evaluating the feature extraction strategy and tuning the final ML model. Write the Executive Summary, Data Collection and Preprocessing, Evaluations, Machine Learning Algorithm part of report, revising report.
 
