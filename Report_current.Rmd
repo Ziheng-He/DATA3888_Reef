@@ -5,11 +5,11 @@ output:
     toc: true
     toc_float: true
     code_folding: hide
-author: '1,2,3,4'
+author: '490407529, 500516735, 500201978, Bryan'
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 #libraries
 library(tidyr)
@@ -43,11 +43,11 @@ The data used in this project is merged from the DATA3888 Reef Check data as wel
 
 **Data Collection**
 
-When merging data sets, we found that latitude and longitude cannot be accurately matched. Using past data and Jackson's guidance, the team chose to divide the latitude and longitude of each observation into a range rather than an exact value. At the same time, two methods were adopted when merging the data sets, thus obtaining two data sets. A small amount of data is suitable for logistic regression, and a large amount of data is suitable for machine learning, which can help the team get a more accurate model.
+When merging data sets, we found that latitude and longitude cannot be accurately matched. Using past data and Jackson's guidance, the team chose to divide the latitude and longitude of each observation into a range rather than an exact value. Two methods were adopted when merging the data sets, resulting in two data sets. A small amount of data is better suited for logistic regression, while a larger amount of data is better for machine learning in building a more accurate model. A visualisation of the coral bleaching in our merged dataset can be seen in Appendix 1.
 
 **Data Prepocessing**
 
-Our main variable of interest was `Average_bleaching`. We discovered there were more 0 values than any other values. For our classification task, our team chose to convert this variable to a binary variable with a threshold of 0. In this case, where the average bleaching equals 0, it would be classified as "bleached", and where average bleaching is greater than 0, it would be "not bleached". However, in our regression model, it would be reversed (average bleaching equals 0 showed no signs of bleaching, and greater than 0 would imply there has been previous bleaching.
+Our main variable of interest was `Average_bleaching`. We discovered there were more 0 values than any other values. For our classification task, our team chose to convert this variable to a binary variable with a threshold of 0. In this case, where the average bleaching equals 0, it would be classified as "bleached", and where average bleaching is greater than 0, it would be "not bleached". However, in our regression model, it would be reversed (average bleaching equals 0 showed no signs of bleaching, and greater than 0 would imply there has been previous bleaching).
 
 ### Models
 
@@ -67,7 +67,7 @@ We tested our merged data on 3 classification models - Logistic Regression, Supp
 -   TSA_Frequency_Standard_Deviation
 -   mean_cur (mean ocean current velocity)
 
-Since our models were not designed specifically for our main research purpose, they can only estimate parameters for our specified variables. Blindly relying on these results can be misleading when discussing analyses and interpretations. Therefore, although ‘mean_cur` showed little relevance in the previous pre-analysis, it was closely related to our study and we chose to include it.
+Since our models were not designed specifically for our main research purpose, they can only estimate parameters for our specified variables. Blindly relying on these results can be misleading when discussing analyses and interpretations. Therefore, although 'mean_cur\` showed little relevance in the previous pre-analysis, it was closely related to our study and we chose to include it.
 
 ### Machine Learning Algorithm
 
@@ -81,7 +81,7 @@ We used a Logistic Regression Model to predict the outcome of bleaching against 
 
 First, we want to identify whether there is a strong correlation between average current velocity and coral bleaching. We decided on p-values less than 0.05 determining a more significant relationship to bleaching. From our model, the mean current velocity had a value of 0.89. This indicates that ocean velocity had no effect in the event of coral bleaching. However, the SSTA frequency (number of times that the sea surface temperature anomaly had a change of more than one degree Celsius) and the temperature variables showed significance associated to the outcome.
 
-The coefficient estimate of `mean_cur` is a positive 0.25, which indicates that our model, with a higher average current velocity is associated to an increased probability that the reef will be susceptible to coral bleaching. This alludes to Mcclanahan et al., (2005), that more intense bleaching was found on sites with higher currents and bleaching was observed to be positively associated with higher water flow. Likewise, the coefficients for `clim_sst` and `temperature_kelvin` were 0.01, suggesting higher temperatures were positively associated to coral bleaching. 
+The coefficient estimate of `mean_cur` is a positive 0.25, which indicates that our model, with a higher average current velocity is associated to an increased probability that the reef will be susceptible to coral bleaching. This alludes to Mcclanahan et al., (2005), that more intense bleaching was found on sites with higher currents and bleaching was observed to be positively associated with higher water flow. Likewise, the coefficients for `clim_sst` and `temperature_kelvin` were 0.01, suggesting higher temperatures were positively associated to coral bleaching. All variables can be seen in Appendix 2.
 
 **Support Vector Machine**
 
@@ -91,19 +91,24 @@ In the SVM model, the accuracy of the model is 83%. Through the linear kernel fu
 
 **Random Forest**
 
-The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not to bleach. Using multiple decision trees can make the judgment more comprehensive and accurate. A decision tree can be understood as a logical process for you to judge whether reef are bleached. However, one decision tree is more susceptible to outliers, and overfitting is also more likely to occur. Multiple people make decisions together, which will produce a fairer judgment. So random forest can reduce the impact of outliers, reducing the possibility of overfitting. In the random forest model, the accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected in this model, there is no relationship between ocean current velocity and coral bleaching.
+The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not bleaching occurs. Using multiple decision trees can make the classification more accurate. A decision tree can be understood as a logical process for you to determine whether reef are bleached. However, one decision tree is more susceptible to outliers and overfitting is also more likely to occur. Multiple decision trees will produce a fairer judgment. So our random forest model can reduce the impact of outliers while reducing our possibility of overfitting. The accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected, implying there is no relationship between ocean current velocity and coral bleaching.
+
+![](RF.png){width="570"}
+
+The interpretation of the random forest model is visualized by 22 estimators into 22 graphs. This will make it easier for others to understand how we make decisions with these variables.
 
 ### Evaluation strategies
 
 We evaluated the accuracy, stability, and scalability of the three models in our evaluation strategy. We established the acceptance criteria for the classifier to be at least 80% accurate, and less than 0.1 seconds.
 
-Accuracy was extracted from 5-fold cross-validation with only 1 repeat. These gave an accuracy of 0.84, 0.87, and 0.83 respectively. Opting for a higher accuracy value, we see that the accuracy for Random Forest is the most accurate classification model. 
+Accuracy was extracted from 5-fold cross-validation with only 1 repeat. These gave an accuracy of 0.84, 0.87, and 0.83 respectively. Opting for a higher accuracy value, we see that the accuracy for Random Forest is the most accurate classification model.
 
 We evaluate the stability based on how well our model can predict actual observations. To do this, we get the accuracy of each of the 5 folds of the cross validation from before. Using boxplots to compare the standard deviations of each model, reflects how well Random Forest performs on accurately predicting real values.
 
 The scalability of a model evaluates how well the model scales across different sizes of data. From the training set, we take samples of 10%, 50%, 70%, and the whole 100% of data and test how long it will take to run. Based on the steepness of the line graph, it can suggest how scalable our models are. In this case, all models ran in under a second, given the smaller data size of our project.
 
 ### Model evaluations {.tabset}
+
 Below is the model evaluation for each of the 3 classification models.
 
 ```{r, message = FALSE, warning = FALSE}
@@ -132,6 +137,7 @@ svm_scalability = svm_time_data$time
 ```
 
 #### Accuracy
+
 ```{r, message = FALSE, warning = FALSE}
 #Accuracy
 accuracies = data.frame(Accuracy = c(lm_accuracy, rf_accuracy, svm_accuracy),
@@ -144,6 +150,7 @@ ggplot(accuracies, aes(x = Model, y = Accuracy)) +
 ```
 
 #### Stability
+
 ```{r}
 stabilities <- data.frame(model = rep(c('LM', 'RF', 'SVM'), each = 5),
                           accuracies = c(lm_stability, rf_stability, svm_stability))
@@ -156,6 +163,7 @@ boxplot(stabilities$accuracies ~ stabilities$model,
 ```
 
 #### Scalability
+
 ```{r}
 scalabilities <- data.frame(model = rep(c('LM', 'RF', 'SVM'), each = 4),
                             train_size = as.factor(c('10%', '50%', '70%', '100%')),
@@ -172,12 +180,10 @@ The next step is to perform hyperparameter tuning on our RF classifier. Here the
 
 # Results
 
-    A clear justification of the final approach based on the proposed evaluation strategies. Ensuring multiple evaluation strategies are used.
-
     A clear description of the deployment process. An engaging and clear illustration of the product (games, shiny app, learning device etc) with a discussion of concepts from multiple disciplines.
 
 There shows to be no correlation between average ocean velocity and the event of coral bleaching in our Great Barrier Reef. All 3 models reflected the same results. We used the Random Forest algorithm as our final classification model. Although this algorithm took the longest classification time, random forest has the best accuracy; while logistic regression is the fastest, the accuracy is lower than random forest. Using multiple decision trees can make the judgment more comprehensive. Furthermore, random forest can reduce the impact of outliers to reduce the possibility of overfitting.
- 
+
 This project was highly multidisciplinary. While DATA students analysed the data and model fitting, MARS students would attempt to make theoretical conclusions on our results. Focusing on the hypothesis, they justified that ocean currents have a less significant impact on coral reef bleaching. Both fields influenced each other in these processes.
 
 python dash stuff.. (how it works)
@@ -186,9 +192,7 @@ python dash stuff.. (how it works)
 
 The team chose to use Python Dash to build our application instead of shiny. This is because dash is easier to use than shiny and the majority of our team is more proficient in Python than R. In python, the team uses the rpy2 package, making it possible for the dash to run R commands. This also makes it easier for teams to work together - those who want to use R can use R, and those who want to use Python can use Python.
 
-about python dash .. etc (whats cool about it)
-e.g. keeps the old data points on map?
-
+about python dash .. etc (whats cool about it) e.g. keeps the old data points on map?
 
 # Discussion
 
@@ -206,9 +210,51 @@ On a bigger project, we could address our limitations of using only a small prop
 
 In conclusion, ocean current velocity and coral bleaching have no relationship. In other words, current velocity is not a good indicator of coral bleaching. This finding contradicts our hypothesis, but it doesn't come as a surprise, as there had been conclusions drawn either way in previous research. From our model evaluation process, Random Forest was found to have the highest accuracy and stability among the 3 models. To visualise its performance, we put it on an interactive Python Dash interface. The use of interactive maps allows marine scientists, as our target audience, to visualize which areas of reefs are more susceptible to bleaching and enact plans for potential coral recovery. Future directions of research may include finding larger data sets in combination with more complex and sophisticated models. In addition, studying ocean currents' direction may prove to have an impact on coral bleaching, which was not in the scope of this project.
 
-
 # Appendix
 
+```{r, include = FALSE}
+#Read data
+new_reef = read_csv("Data/lr_version_merged_mean.csv")
+
+#Clean names
+data = new_reef %>% janitor::clean_names()
+data <- na.omit(data)
+
+# We have to sort out bleached and not bleached corals
+data$bleached <- ifelse(data$average_bleaching > 0, "1", "0")
+# 0 = not bleached
+# 1 = bleached
+data %>% count(bleached)
+
+# Convert to numeric
+data$bleached <- as.factor(data$bleached)
+```
+
+**Appendix 1**
+
+```{r}
+oz_states <- ozmap_states
+
+ggplot(oz_states) + geom_sf() + coord_sf() +
+  geom_point(
+    data = data,
+    aes(reef_longitude, reef_latitude, size = average_bleaching, colour = average_bleaching),
+    alpha = 0.7) + ggtitle("Average coral bleaching along the GBF") + 
+  ylab("Latitude") + xlab("Longitude") 
+```
+
+**Appendix 2**
+
+```{r}
+glm = glm(bleached ~ clim_sst + temperature_kelvin + temperature_kelvin_standard_deviation + ssta_frequency + ssta_frequency_standard_deviation + tsa_frequency_standard_deviation + mean_cur, family = binomial, data = data)
+summary(glm)
+```
+
+sessionInfo()
+
+```{r}
+sessionInfo()
+```
 
 # Student contributions
 
@@ -220,22 +266,32 @@ Harry Xu：Random forest model fitting, data visualizations, model evaluation, e
 
 Oliver He：Support-vector machine fitting, data visualizations, model evaluation, write the results section and the discussion part of the report, revising report.
 
-
 # References
 
--   <https://www.barrierreef.org/the-reef/threats/coral-bleaching>
--   <https://oceanservice.noaa.gov/facts/coral_bleach.html>
--   DeCarlo ...
--   Nakamura ...
--   <https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2009JC005761>
--   Effects of geography, taxa, water flow, and temperature variation on coral bleaching intensity in Mauritius
-- https://www.gbrmpa.gov.au/our-work/threats-to-the-reef/climate-change/ocean-currents 
+AIMS eReefs THREDDS at Australian Institute of Marine Science. Retrieved from https://thredds.ereefs.aims.gov.au/thredds/catalog.html
 
+Barton J., Willis B.L., Hutson K.S. (2015) Coral propagation: a review of techniques for ornamental trade and reef restoration. *Reviews in Aquaculture*. Retrieved from https://www.researchgate.net/publication/291012110_Coral_propagation_a_review_of_techniques_for_ornamental_trade_and_reef_restoration 
 
-```{=html}
-<!-- -->
-```
-    # Presentation
-    - Correct grammar
-    - All figures and tables captioned, axes, headings, legends
-    - Only show necessary figures (Appendix)
+Convert NetCDF file to CSV or text using Python. *StackOverflow*. Retrieved from https://stackoverflow.com/questions/44359869/convert-netcdf-file-to-csv-or-text-using-python
+
+Coral Bleaching. *The Great Barrier Reef Foundation*. Retrieved from https://www.barrierreef.org/the-reef/threats/coral-bleaching 
+
+DeCarlo, T.M. and Harrison, H.B. (2019). An enigmatic decoupling between heat stress and coral bleaching on the Great Barrier Reef. *PeerJ*, Retrieved from  https://peerj.com/articles/7473/
+
+Decarlo T.M., Gajdzik, Coker D.J., Ellis J., Roberts M.B., Hammerman N.M, Pandolfi J.M., Monroe A.A., Berumen M.L. (2020) Nutrient-supplying ocean currents modulate coral bleaching susceptibility. *Science Advances*. Retrieved from https://www.science.org/doi/10.1126/sciadv.abc5493 
+
+Mcclanahan T.R., Maina J., Pilllay R.M., Baker A.C. (2005), Effects of geography, taxa, water flow and temperature variation on coral bleaching intensity in Mauritius. *Marine Ecology Progress series*, Retrieved from https://www.researchgate.net/publication/230680679_Effects_of_geography_taxa_water_flow_and_temperature_variation_on_coral_bleaching_intensity_in_Mauritius 
+
+Nakamura, T., Yamasaki, H. and Van Woesik, R. (2003) Water flow facilitates recovery from bleaching in the coral Stylophora pistillata. *Marine ecology Progress series*, Retrieved from https://www.researchgate.net/publication/250217915_Water_flow_facilitates_recovery_from_bleaching_in_the_coral_Stylophora_pistillata 
+
+NOAA(2011) What is coral bleaching? *National Ocean Service*. Retrieved from https://oceanservice.noaa.gov/facts/coral_bleach.html 
+
+Ocean Currents (2022) GBRMPA. Retrieved from https://www.gbrmpa.gov.au/our-work/threats-to-the-reef/climate-change/ocean-currents 
+
+ReefOS Retrieved from https://labs.coralgardeners.org/reefos?utm_source=impactreport21&utm_content=reefoslive 
+
+Ridd P.V. Brinkman R., Mckinna L.I.W. (2010) On the surface circulation in the western Coral Sea and residence times in the Great Barrier Reef. *Journal of Geophysical Research Oceans*. Retrieved from https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2009JC005761 
+
+Scikit-learn: Machine Learning in Python(2011) Retrieved from https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html
+
+Sully S., Burkepile D.E., Donovan M.K., Hodgson G., van Woesik R. (2019) A global analysis of coral bleaching over the past two decades. *Nature communications*. Retrieved from https://www.nature.com/articles/s41467-019-09238-2 
