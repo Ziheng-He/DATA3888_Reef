@@ -31,7 +31,7 @@ require(gridExtra)
 
 Coral reefs are the most diverse marine ecosystems in the world. They provide billions of dollars of economic value through Coastal protection, food, tourism, and medicine from the sea. Coral bleaching leads to coral morbidity and mortality, which leads to coral loss. Global atmosphere-ocean circulation models predict that few coral reefs will survive in the ocean for the next 80 years.
 
-We know that warmer ocean temperatures linked to climate change are the primary factors in coral bleaching. In the interdisciplinary project with the MARS students, we identified an interesting correlation between ocean currents, thermal activity, and its effect on coral. However, upon further research, conflicting literature states that, while ocean currents can transport excess nutrients that make corals more susceptible to bleaching (DeCarlo et al., 2020), stronger currents can also flush out toxins aiding in the process of coral recovery (Nakamura et al., 2003).
+We know that warmer ocean temperatures linked to climate change are the primary factors in coral bleaching. In the interdisciplinary project with the MARS students, we identified an interesting correlation between ocean currents, thermal activity, and its effect on coral. However, upon further research, conflicting literature states that, while ocean currents can transport excess nutrients that make corals more susceptible to bleaching (DeCarlo et al., 2020), stronger currents can also flush out toxins aiding in the process of coral recovery (Nakamura et al., 2003). This blurs the line on the effects ocean currents have on coral bleaching.
 
 Our team looked at the relationship between average ocean current velocity and the effect it has on the bleaching of corals in the Great Barrier Reef. In doing so, we can confirm our hypothesis that ocean currents do have a significant impact on coral bleaching. The motivation for our group to implement the project is that it enables marine scientists to predict and visualize the likelihood of coral bleaching based on specific parameters of the Great Barrier Reef. Our overall aim was to implement different classification models on Python Dash to enable marine scientists to predict and visualize the chance of coral bleaching given specific parameters within the Great Barrier Reef. This will allow further attention on areas where corals are more susceptible to stressing factors. Accuracy and feature selection were analyzed to determine which classifiers and features were best for classification of reef bleaching. After multiple evaluations, the random forest classifier is the most accurate for determining whether coral reefs are bleached. At the same time, the three models analyze the characteristic variables to determine the main variables that lead to coral reef bleaching.
 
@@ -94,6 +94,8 @@ In the SVM model, the accuracy of the model is 83%. Through the linear kernel fu
 The random forest model is composed of multiple decision trees, and each decision tree is used to judge whether or not bleaching occurs. Using multiple decision trees can make the classification more accurate. A decision tree can be understood as a logical process for you to determine whether reef are bleached. However, one decision tree is more susceptible to outliers and overfitting is also more likely to occur. Multiple decision trees will produce a fairer judgment. So our random forest model can reduce the impact of outliers while reducing our possibility of overfitting. The accuracy of the model is 87%. From the importance of the features in the model, the effect of ocean currents velocity on whether coral reefs are bleached is small. The importance of mean cur is only 0.005. This means that our hypothesis is rejected, implying there is no relationship between ocean current velocity and coral bleaching.
 
 ![](RF.png){width="570"}
+
+Figure 1. Random Forest Model
 
 The interpretation of the random forest model is visualized by 22 estimators into 22 graphs. This will make it easier for others to understand how we make decisions with these variables.
 
@@ -172,6 +174,10 @@ scalabilities <- data.frame(model = rep(c('LM', 'RF', 'SVM'), each = 4),
 ggplot(scalabilities, aes(x = train_size, y = time, group = model, colour = model)) + geom_line() 
 ```
 
+### {-}
+
+Figure 2. Model evaluation graphs comparing 3 models
+
 It can be seen that random forest has the best accuracy, but the slowest speed; while logistic regression is the fastest, but the accuracy is lower than random forest. But the team argues that the accuracy of predictions about whether coral reefs will bleach is more important than the speed of predictions. If the model fails to accurately classify bleached coral reefs, the management and protection of coral reefs will be incomplete, resulting in significant losses.
 
 Therefore, random forest is selected as the main prediction method. Another factor for choosing to use a random forest model is that a narrower IQR indicates higher accuracy.
@@ -190,9 +196,11 @@ python dash stuff.. (how it works)
 
 ### Innovation
 
-The team chose to use Python Dash to build our application instead of shiny. This is because dash is easier to use than shiny and the majority of our team is more proficient in Python than R. In python, the team uses the rpy2 package, making it possible for the dash to run R commands. This also makes it easier for teams to work together - those who want to use R can use R, and those who want to use Python can use Python.
+The team chose to use Python Dash to build our application instead of shiny. This is because dash is easier to use than shiny and the majority of our team is more proficient in Python than R. In python, the team uses the rpy2 package, making it possible for the dash to run R commands. This also makes it easier for teams to work together - combining code from both python and R.
 
-about python dash .. etc (whats cool about it) e.g. keeps the old data points on map?
+![](Innovation.png)
+
+Figure 3. Using rpy2 package on python to run R script
 
 # Discussion
 
@@ -268,30 +276,30 @@ Oliver He：Support-vector machine fitting, data visualizations, model evaluatio
 
 # References
 
-AIMS eReefs THREDDS at Australian Institute of Marine Science. Retrieved from https://thredds.ereefs.aims.gov.au/thredds/catalog.html
+AIMS eReefs THREDDS at Australian Institute of Marine Science. Retrieved from <https://thredds.ereefs.aims.gov.au/thredds/catalog.html>
 
-Barton J., Willis B.L., Hutson K.S. (2015) Coral propagation: a review of techniques for ornamental trade and reef restoration. *Reviews in Aquaculture*. Retrieved from https://www.researchgate.net/publication/291012110_Coral_propagation_a_review_of_techniques_for_ornamental_trade_and_reef_restoration 
+Barton J., Willis B.L., Hutson K.S. (2015) Coral propagation: a review of techniques for ornamental trade and reef restoration. *Reviews in Aquaculture*. Retrieved from <https://www.researchgate.net/publication/291012110_Coral_propagation_a_review_of_techniques_for_ornamental_trade_and_reef_restoration>
 
-Convert NetCDF file to CSV or text using Python. *StackOverflow*. Retrieved from https://stackoverflow.com/questions/44359869/convert-netcdf-file-to-csv-or-text-using-python
+Convert NetCDF file to CSV or text using Python. *StackOverflow*. Retrieved from <https://stackoverflow.com/questions/44359869/convert-netcdf-file-to-csv-or-text-using-python>
 
-Coral Bleaching. *The Great Barrier Reef Foundation*. Retrieved from https://www.barrierreef.org/the-reef/threats/coral-bleaching 
+Coral Bleaching. *The Great Barrier Reef Foundation*. Retrieved from <https://www.barrierreef.org/the-reef/threats/coral-bleaching>
 
-DeCarlo, T.M. and Harrison, H.B. (2019). An enigmatic decoupling between heat stress and coral bleaching on the Great Barrier Reef. *PeerJ*, Retrieved from  https://peerj.com/articles/7473/
+DeCarlo, T.M. and Harrison, H.B. (2019). An enigmatic decoupling between heat stress and coral bleaching on the Great Barrier Reef. *PeerJ*, Retrieved from <https://peerj.com/articles/7473/>
 
-Decarlo T.M., Gajdzik, Coker D.J., Ellis J., Roberts M.B., Hammerman N.M, Pandolfi J.M., Monroe A.A., Berumen M.L. (2020) Nutrient-supplying ocean currents modulate coral bleaching susceptibility. *Science Advances*. Retrieved from https://www.science.org/doi/10.1126/sciadv.abc5493 
+Decarlo T.M., Gajdzik, Coker D.J., Ellis J., Roberts M.B., Hammerman N.M, Pandolfi J.M., Monroe A.A., Berumen M.L. (2020) Nutrient-supplying ocean currents modulate coral bleaching susceptibility. *Science Advances*. Retrieved from <https://www.science.org/doi/10.1126/sciadv.abc5493>
 
-Mcclanahan T.R., Maina J., Pilllay R.M., Baker A.C. (2005), Effects of geography, taxa, water flow and temperature variation on coral bleaching intensity in Mauritius. *Marine Ecology Progress series*, Retrieved from https://www.researchgate.net/publication/230680679_Effects_of_geography_taxa_water_flow_and_temperature_variation_on_coral_bleaching_intensity_in_Mauritius 
+Mcclanahan T.R., Maina J., Pilllay R.M., Baker A.C. (2005), Effects of geography, taxa, water flow and temperature variation on coral bleaching intensity in Mauritius. *Marine Ecology Progress series*, Retrieved from <https://www.researchgate.net/publication/230680679_Effects_of_geography_taxa_water_flow_and_temperature_variation_on_coral_bleaching_intensity_in_Mauritius>
 
-Nakamura, T., Yamasaki, H. and Van Woesik, R. (2003) Water flow facilitates recovery from bleaching in the coral Stylophora pistillata. *Marine ecology Progress series*, Retrieved from https://www.researchgate.net/publication/250217915_Water_flow_facilitates_recovery_from_bleaching_in_the_coral_Stylophora_pistillata 
+Nakamura, T., Yamasaki, H. and Van Woesik, R. (2003) Water flow facilitates recovery from bleaching in the coral Stylophora pistillata. *Marine ecology Progress series*, Retrieved from <https://www.researchgate.net/publication/250217915_Water_flow_facilitates_recovery_from_bleaching_in_the_coral_Stylophora_pistillata>
 
-NOAA(2011) What is coral bleaching? *National Ocean Service*. Retrieved from https://oceanservice.noaa.gov/facts/coral_bleach.html 
+NOAA(2011) What is coral bleaching? *National Ocean Service*. Retrieved from <https://oceanservice.noaa.gov/facts/coral_bleach.html>
 
-Ocean Currents (2022) GBRMPA. Retrieved from https://www.gbrmpa.gov.au/our-work/threats-to-the-reef/climate-change/ocean-currents 
+Ocean Currents (2022) GBRMPA. Retrieved from <https://www.gbrmpa.gov.au/our-work/threats-to-the-reef/climate-change/ocean-currents>
 
-ReefOS Retrieved from https://labs.coralgardeners.org/reefos?utm_source=impactreport21&utm_content=reefoslive 
+ReefOS Retrieved from <https://labs.coralgardeners.org/reefos?utm_source=impactreport21&utm_content=reefoslive>
 
-Ridd P.V. Brinkman R., Mckinna L.I.W. (2010) On the surface circulation in the western Coral Sea and residence times in the Great Barrier Reef. *Journal of Geophysical Research Oceans*. Retrieved from https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2009JC005761 
+Ridd P.V. Brinkman R., Mckinna L.I.W. (2010) On the surface circulation in the western Coral Sea and residence times in the Great Barrier Reef. *Journal of Geophysical Research Oceans*. Retrieved from <https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2009JC005761>
 
-Scikit-learn: Machine Learning in Python(2011) Retrieved from https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html
+Scikit-learn: Machine Learning in Python(2011) Retrieved from <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html>
 
-Sully S., Burkepile D.E., Donovan M.K., Hodgson G., van Woesik R. (2019) A global analysis of coral bleaching over the past two decades. *Nature communications*. Retrieved from https://www.nature.com/articles/s41467-019-09238-2 
+Sully S., Burkepile D.E., Donovan M.K., Hodgson G., van Woesik R. (2019) A global analysis of coral bleaching over the past two decades. *Nature communications*. Retrieved from <https://www.nature.com/articles/s41467-019-09238-2>
